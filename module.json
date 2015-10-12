@@ -1,0 +1,192 @@
+{
+    "dependencies": [],
+    "singleton": true,
+    "category": "complex_applications",
+    "author": "Maroš Kollár",
+    "homepage": "http://k-1.com",
+    "icon": "day.png",
+    "version": "1.0.0",
+    "moduleName": "SecurityZone",
+    "maturity": "stable",
+    "repository": {
+        "type": "git",
+        "source": "https://github.com/maros/Zway-SecurityZone"
+    },
+    "defaults": {
+        "title": "__title__",
+        "description": "__description__",
+        "delay": 0,
+        "timeout": 0
+    },
+    "schema": {
+        "type": "object",
+        "properties": {
+            "tests": {
+				"type": "array",
+				"items": {
+					"type": "object",
+					"properties": {
+						"testType": {
+							"type": "string",
+							"enum": ["binary", "multilevel","remote"],
+							"required": true,
+							"default": "binary"
+						},
+						"testBinary": {
+							"type": "object",
+							"dependencies": "testType",
+							"properties": {
+								"device": {
+									"field": "enum",
+									"datasource": "namespaces",
+									"enum": "namespaces:devices_sensorBinary:deviceId,namespaces:devices_switchBinary:deviceId",
+									"required": true
+								},
+								"testValue": {
+									"type": "string",
+									"enum": ["off", "on"],
+									"required": true,
+									"default" : "on"
+								}
+							}
+						},
+						"testMultilevel": {
+							"type": "object",
+							"dependencies": "testType",
+							"properties": {
+								"device": {
+									"field": "enum",
+									"datasource": "namespaces",
+									"enum": "namespaces:devices_sensorMultilevel:deviceId,namespaces:devices_switchMultilevel:deviceId,namespaces:devices_battery:deviceId",
+									"required": true
+								},
+								"testOperator": {
+									"type": "string",
+									"enum": ["=", "!=", ">", ">=", "<", "<="],
+									"required": true
+								},
+								"testValue": {
+									"type": "number",
+									"required": true
+								}
+							}
+						},
+						"testRemote": {
+							"type": "object",
+							"dependencies": "testType",
+							"properties": {
+								"device": {
+									"field": "enum",
+									"datasource": "namespaces",
+									"enum": "namespaces:devices_switchControl:deviceId",
+									"required": true
+								},
+								"testValue": {
+									"type": "string",
+									"enum": ["off", "on", "upstart", "upstop", "downstart", "downstop"],
+									"required": true,
+									"default" : "on"
+								}
+							}
+						}
+					}
+				}
+			},
+            "type": {
+                "type": "string",
+                "required": true,
+                "enum": ["intrusion", "water", "smoke", "co2", "heat", "cold", "tamper", "other" ],
+                "default" : "open"
+            },
+            "delay": {
+                "type": "integer",
+                "required": true
+            },
+            "timeout": {
+                "type": "integer",
+                "required": true
+            }
+
+        },
+        "required": true
+    },
+    "options": {
+        "fields": {
+            "tests": {
+				"label": "__tests_label__",
+				"fields": {
+					"item": {
+						"fields": {
+							"testType": {
+								"type": "select",
+								"default": ""
+							},
+							"testBinary": {
+								"label": "__test_binary_label__",
+								"dependencies": {
+									"testType": "binary"
+								},
+								"fields": {
+									"device": {
+										"label": "",
+										"type": "select",
+										"datasource": "namespaces",
+										"field": "optionLabels",
+										"optionLabels": "namespaces:devices_sensorBinary:deviceName,namespaces:devices_switchBinary:deviceName"
+									}
+								}
+							},
+							"testMultilevel": {
+								"label": "__test_multi_label__",
+								"dependencies": {
+									"testType": "multilevel"
+								},
+								"fields": {
+									"device": {
+										"label": "",
+										"type": "select",
+										"datasource": "namespaces",
+										"field": "optionLabels",
+										"optionLabels": "namespaces:devices_sensorMultilevel:deviceName,namespaces:devices_switchMultilevel:deviceName"
+									},
+									"testOperator": {
+										"type": "select",
+										"optionLabels": ["=", "≠", ">", "≥", "<", "≤"]
+									}
+								}
+							},
+							"testRemote": {
+								"label": "__tests_remote_label__",
+								"dependencies": {
+									"testType": "remote"
+								},
+								"fields": {
+									"device": {
+										"label": "",
+										"type": "select",
+										"datasource": "namespaces",
+										"field": "optionLabels",
+										"optionLabels": "namespaces:devices_switchControl:deviceName"
+									}
+								}
+							}
+						}
+					}
+				}
+			},            
+            "type": {
+                "label": "__type_label__",
+                "label": "__type_helper__",
+                "optionLabels": ["__type_intrusion__", "__type_water__", "__type_smoke__", "__type_co2__","__type_heat__","__type_cold__","__type_tamper__","__type_other__"]
+            },
+            "delay": {
+                "label": "__delay_label__",
+                "helper": "__delay_helper__"
+            },
+            "timeout": {
+                "label": "__timeout_label__",
+                "helper": "__timeout_helper__"
+            }
+        }
+    }
+}
