@@ -113,6 +113,7 @@ SecurityZone.prototype.setState = function (state) {
     if (state === 'off') {
         // TODO disable alarm delay
         // TODO disable timer
+        // TODO reset mode
         // TODO emit event
     }
     
@@ -125,6 +126,56 @@ SecurityZone.prototype.setState = function (state) {
         altitude: altitude
     });
     */
+};
+
+SecurityZone.prototype.testRule = function () {
+    var self = this;
+    
+    if (self.vDev.get("metrics:level") == "off")
+        return;
+    
+    // TODO check if delay already running
+    // TODO check if alarm already running
+    
+    var response = false;
+    _.each(self.config.tests,function(test) {
+        if (test.testType === "multilevel") {
+            response = response || self.op(self.controller.devices.get(test.testMultilevel.device).get("metrics:level"), test.testMultilevel.testOperator, test.testMultilevel.testValue);
+        } else if (test.testType === "binary") {
+            response = response || (self.controller.devices.get(test.testBinary.device).get("metrics:level") === test.testBinary.testValue);
+        } else if (test.testType === "remote") {
+            var dev = self.controller.devices.get(test.testRemote.device);
+            response = response || ((_.contains(["on", "off"], test.testRemote.testValue) && dev.get("metrics:level") === test.testRemote.testValue) || (_.contains(["upstart", "upstop", "downstart", "downstop"], test.testRemote.testValue) && dev.get("metrics:change") === test.testRemote.testValue));
+        }
+    });
+    
+    if (response) {
+        // TODO trigger delay
+        // TODO trigger timeout
+        // TOOO emit event
+        // TODO set mode
+        
+        // Send Notification
+        //self.controller.addNotification("warning", self.message, "module", "SecurityMode");
+    }
+};
+
+SecurityMode.prototype.op = function (dval, op, val) {
+    if (op === "=") {
+        return dval === val;
+    } else if (op === "!=") {
+        return dval !== val;
+    } else if (op === ">") {
+        return dval > val;
+    } else if (op === "<") {
+        return dval < val;
+    } else if (op === ">=") {
+        return dval >= val;
+    } else if (op === "<=") {
+        return dval <= val;
+    }
+        
+    return null; // error!!  
 };
 
 

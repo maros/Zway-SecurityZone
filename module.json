@@ -106,7 +106,6 @@
                 "type": "integer",
                 "required": true
             }
-
         },
         "required": true
     },
