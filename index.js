@@ -33,7 +33,8 @@ SecurityZone.prototype.init = function (config) {
     
     var langFile        = self.controller.loadModuleLang("SecurityZone");
     
-    
+    this.delay          = null;
+    this.timer          = null;
     
     this.vDev = this.controller.devices.create({
         deviceId: "SecurityZone_"+this.id,
@@ -51,14 +52,27 @@ SecurityZone.prototype.init = function (config) {
                 && command !== 'off') {
                 return;
             }
-            if (command ==='off'
-                && self.status.mode === true) {
-                self.randomOff();
-            }
-            this.set("metrics:level", command);
-            this.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/RandomDevice/icon_"+command+".png");
+            self.setState(command);
         },
         moduleId: this.id
+    });
+    
+    setTimeout(_.bind(self.initCallback,self),12000);
+};
+
+SecurityZone.prototype.initCallback = function() {
+    var self = this;
+    
+    self.tests = {};
+    
+    _.each(self.config.tests,function(test) {
+        if (test.testType === "binary") {
+            self.attach(test.testBinary);
+        } else if (test.testType === "multilevel") {
+            self.attach(test.testMultilevel);
+        } else if (test.testType === "remote") {
+            self.attach(test.testRemote);
+        }
     });
 };
 
@@ -70,6 +84,10 @@ SecurityZone.prototype.stop = function () {
         this.vDev = null;
     }
     
+    // TODO: remove test callbacks
+    // TODO disable alarm delay
+    // TODO disable timer
+    
     SecurityZone.super_.prototype.stop.call(this);
 };
 
@@ -77,8 +95,30 @@ SecurityZone.prototype.stop = function () {
 // --- Module methods
 // ----------------------------------------------------------------------------
 
-SecurityZone.prototype.updateCalculation = function () {
+SecurityZone.prototype.attach = function (test) {
     var self        = this;
+    
+    // TODO Build test
+    // TODO Store test
+    // TODO Attach test
+    
+    //this.controller.devices.on(test.device, "change:metrics:level", this._testRule);
+    //this.controller.devices.on(test.device, "change:metrics:change", this._testRule);
+    
+};
+
+SecurityZone.prototype.setState = function (state) {
+    var self        = this;
+    
+    if (state === 'off') {
+        // TODO disable alarm delay
+        // TODO disable timer
+        // TODO emit event
+    }
+    
+    self.vDev.set("metrics:level", state);
+    self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/SecurityZone/icon_"+state+".png");
+    
     /*
     self.controller.emit("SecurityZone.setPos", {
         azimuth: azimuth,

@@ -22,76 +22,76 @@
         "type": "object",
         "properties": {
             "tests": {
-				"type": "array",
-				"items": {
-					"type": "object",
-					"properties": {
-						"testType": {
-							"type": "string",
-							"enum": ["binary", "multilevel","remote"],
-							"required": true,
-							"default": "binary"
-						},
-						"testBinary": {
-							"type": "object",
-							"dependencies": "testType",
-							"properties": {
-								"device": {
-									"field": "enum",
-									"datasource": "namespaces",
-									"enum": "namespaces:devices_sensorBinary:deviceId,namespaces:devices_switchBinary:deviceId",
-									"required": true
-								},
-								"testValue": {
-									"type": "string",
-									"enum": ["off", "on"],
-									"required": true,
-									"default" : "on"
-								}
-							}
-						},
-						"testMultilevel": {
-							"type": "object",
-							"dependencies": "testType",
-							"properties": {
-								"device": {
-									"field": "enum",
-									"datasource": "namespaces",
-									"enum": "namespaces:devices_sensorMultilevel:deviceId,namespaces:devices_switchMultilevel:deviceId,namespaces:devices_battery:deviceId",
-									"required": true
-								},
-								"testOperator": {
-									"type": "string",
-									"enum": ["=", "!=", ">", ">=", "<", "<="],
-									"required": true
-								},
-								"testValue": {
-									"type": "number",
-									"required": true
-								}
-							}
-						},
-						"testRemote": {
-							"type": "object",
-							"dependencies": "testType",
-							"properties": {
-								"device": {
-									"field": "enum",
-									"datasource": "namespaces",
-									"enum": "namespaces:devices_switchControl:deviceId",
-									"required": true
-								},
-								"testValue": {
-									"type": "string",
-									"enum": ["off", "on", "upstart", "upstop", "downstart", "downstop"],
-									"required": true,
-									"default" : "on"
-								}
-							}
-						}
-					}
-				}
-			},
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "testType": {
+                            "type": "string",
+                            "enum": ["binary", "multilevel","remote"],
+                            "required": true,
+                            "default": "binary"
+                        },
+                        "testBinary": {
+                            "type": "object",
+                            "dependencies": "testType",
+                            "properties": {
+                                "device": {
+                                    "field": "enum",
+                                    "datasource": "namespaces",
+                                    "enum": "namespaces:devices_sensorBinary:deviceId,namespaces:devices_switchBinary:deviceId",
+                                    "required": true
+                                },
+                                "testValue": {
+                                    "type": "string",
+                                    "enum": ["off", "on"],
+                                    "required": true,
+                                    "default" : "on"
+                                }
+                            }
+                        },
+                        "testMultilevel": {
+                            "type": "object",
+                            "dependencies": "testType",
+                            "properties": {
+                                "device": {
+                                    "field": "enum",
+                                    "datasource": "namespaces",
+                                    "enum": "namespaces:devices_sensorMultilevel:deviceId,namespaces:devices_switchMultilevel:deviceId,namespaces:devices_battery:deviceId",
+                                    "required": true
+                                },
+                                "testOperator": {
+                                    "type": "string",
+                                    "enum": ["=", "!=", ">", ">=", "<", "<="],
+                                    "required": true
+                                },
+                                "testValue": {
+                                    "type": "number",
+                                    "required": true
+                                }
+                            }
+                        },
+                        "testRemote": {
+                            "type": "object",
+                            "dependencies": "testType",
+                            "properties": {
+                                "device": {
+                                    "field": "enum",
+                                    "datasource": "namespaces",
+                                    "enum": "namespaces:devices_switchControl:deviceId",
+                                    "required": true
+                                },
+                                "testValue": {
+                                    "type": "string",
+                                    "enum": ["off", "on", "upstart", "upstop", "downstart", "downstop"],
+                                    "required": true,
+                                    "default" : "on"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "type": {
                 "type": "string",
                 "required": true,
@@ -113,67 +113,67 @@
     "options": {
         "fields": {
             "tests": {
-				"label": "__tests_label__",
-				"fields": {
-					"item": {
-						"fields": {
-							"testType": {
-								"type": "select",
-								"default": ""
-							},
-							"testBinary": {
-								"label": "__test_binary_label__",
-								"dependencies": {
-									"testType": "binary"
-								},
-								"fields": {
-									"device": {
-										"label": "",
-										"type": "select",
-										"datasource": "namespaces",
-										"field": "optionLabels",
-										"optionLabels": "namespaces:devices_sensorBinary:deviceName,namespaces:devices_switchBinary:deviceName"
-									}
-								}
-							},
-							"testMultilevel": {
-								"label": "__test_multi_label__",
-								"dependencies": {
-									"testType": "multilevel"
-								},
-								"fields": {
-									"device": {
-										"label": "",
-										"type": "select",
-										"datasource": "namespaces",
-										"field": "optionLabels",
-										"optionLabels": "namespaces:devices_sensorMultilevel:deviceName,namespaces:devices_switchMultilevel:deviceName"
-									},
-									"testOperator": {
-										"type": "select",
-										"optionLabels": ["=", "≠", ">", "≥", "<", "≤"]
-									}
-								}
-							},
-							"testRemote": {
-								"label": "__tests_remote_label__",
-								"dependencies": {
-									"testType": "remote"
-								},
-								"fields": {
-									"device": {
-										"label": "",
-										"type": "select",
-										"datasource": "namespaces",
-										"field": "optionLabels",
-										"optionLabels": "namespaces:devices_switchControl:deviceName"
-									}
-								}
-							}
-						}
-					}
-				}
-			},            
+                "label": "__tests_label__",
+                "fields": {
+                    "item": {
+                        "fields": {
+                            "testType": {
+                                "type": "select",
+                                "default": ""
+                            },
+                            "testBinary": {
+                                "label": "__test_binary_label__",
+                                "dependencies": {
+                                    "testType": "binary"
+                                },
+                                "fields": {
+                                    "device": {
+                                        "label": "",
+                                        "type": "select",
+                                        "datasource": "namespaces",
+                                        "field": "optionLabels",
+                                        "optionLabels": "namespaces:devices_sensorBinary:deviceName,namespaces:devices_switchBinary:deviceName"
+                                    }
+                                }
+                            },
+                            "testMultilevel": {
+                                "label": "__test_multi_label__",
+                                "dependencies": {
+                                    "testType": "multilevel"
+                                },
+                                "fields": {
+                                    "device": {
+                                        "label": "",
+                                        "type": "select",
+                                        "datasource": "namespaces",
+                                        "field": "optionLabels",
+                                        "optionLabels": "namespaces:devices_sensorMultilevel:deviceName,namespaces:devices_switchMultilevel:deviceName"
+                                    },
+                                    "testOperator": {
+                                        "type": "select",
+                                        "optionLabels": ["=", "≠", ">", "≥", "<", "≤"]
+                                    }
+                                }
+                            },
+                            "testRemote": {
+                                "label": "__tests_remote_label__",
+                                "dependencies": {
+                                    "testType": "remote"
+                                },
+                                "fields": {
+                                    "device": {
+                                        "label": "",
+                                        "type": "select",
+                                        "datasource": "namespaces",
+                                        "field": "optionLabels",
+                                        "optionLabels": "namespaces:devices_switchControl:deviceName"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "type": {
                 "label": "__type_label__",
                 "label": "__type_helper__",
