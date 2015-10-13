@@ -5,7 +5,7 @@ Version: 1.0.0
 -----------------------------------------------------------------------------
 Author: maros@k-1.com <maros@k-1.com>
 Description:
-    This module checks weather updates via weatherundergound.com
+    Group security devices in zones. 
 
 ******************************************************************************/
 
@@ -23,7 +23,11 @@ _module = SecurityZone;
 // ----------------------------------------------------------------------------
 
 SecurityZone.prototype.events = [
-    // TODO
+    'security.detect',
+    'security.alarm_start',
+    'security.alarm_timeout',
+    'security.alarm_cancel',
+    'security.alarm_stop'
 ];
 
 SecurityZone.prototype.init = function (config) {
@@ -32,9 +36,9 @@ SecurityZone.prototype.init = function (config) {
     var self = this;
     
     var langFile        = self.controller.loadModuleLang("SecurityZone");
-    
-    this.delay          = null;
-    this.timer          = null;
+    self.delay          = null;
+    self.timer          = null;
+    self.callback       = null;
     
     this.vDev = this.controller.devices.create({
         deviceId: "SecurityZone_"+this.id,
@@ -64,6 +68,7 @@ SecurityZone.prototype.initCallback = function() {
     var self = this;
     
     self.tests = {};
+    self.callback   = _.bind(self.testRule,self);
     
     _.each(self.config.tests,function(test) {
         if (test.testType === "binary") {
@@ -84,7 +89,21 @@ SecurityZone.prototype.stop = function () {
         this.vDev = null;
     }
     
-    // TODO: remove test callbacks
+    _.each(self.config.tests,function(test) {
+        if (test.testType === "binary") {
+            self.detach(test.testBinary);
+        } else if (test.testType === "multilevel") {
+            self.detach(test.testMultilevel);
+        } else if (test.testType === "remote") {
+            self.detach(test.testRemote);
+        }
+    });
+
+    self.callback = null;
+    
+    self.stopTimer();
+    self.stopDelay();
+
     // TODO disable alarm delay
     // TODO disable timer
     
@@ -97,27 +116,52 @@ SecurityZone.prototype.stop = function () {
 
 SecurityZone.prototype.attach = function (test) {
     var self        = this;
-    
-    // TODO Build test
-    // TODO Store test
-    // TODO Attach test
-    
-    //this.controller.devices.on(test.device, "change:metrics:level", this._testRule);
-    //this.controller.devices.on(test.device, "change:metrics:change", this._testRule);
-    
+    self.controller.devices.on(test.device, "change:metrics:level", self.callback);
+    self.controller.devices.on(test.device, "change:metrics:change", self.callback);
+};
+
+SecurityZone.prototype.detach = function (test) {
+    var self        = this;
+    self.controller.devices.off(test.device, "change:metrics:level", self.callback);
+    self.controller.devices.off(test.device, "change:metrics:change", self.callback);
+};
+
+SecurityZone.prototype.stopTimer = function() {
+    var self        = this;
+    if (typeof(self.timer) !== 'null') {
+        // TODO stop timeout
+        // TODO event
+        self.timer = null;
+    }
+};
+
+SecurityZone.prototype.stopDelay = function () {
+    var self        = this;
+    // TODO stop delay
+    // TODO event
 };
 
 SecurityZone.prototype.setState = function (state) {
     var self        = this;
     
     if (state === 'off') {
+        self.stopTimer();
+        self.stopDelay();
+        self.mode = 'off';
+        self.vDev.set("metrics:level", 'off');
+
         // TODO disable alarm delay
         // TODO disable timer
         // TODO reset mode
         // TODO emit event
+    } else if (state === 'alarm') {
+        // TODO
+    } else if (state === 
+    } else {
+        self.vDev.set("metrics:level", 'on');
+
     }
     
-    self.vDev.set("metrics:level", state);
     self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/SecurityZone/icon_"+state+".png");
     
     /*
