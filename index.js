@@ -23,11 +23,9 @@ _module = SecurityZone;
 // ----------------------------------------------------------------------------
 
 SecurityZone.prototype.events = [
-    'security.detect',
-    'security.alarm_start',
-    'security.alarm_timeout',
-    'security.alarm_cancel',
-    'security.alarm_stop'
+    'security.timeout',
+    'security.alarm',
+    'security.cancel'
 ];
 
 SecurityZone.prototype.init = function (config) {
@@ -37,15 +35,16 @@ SecurityZone.prototype.init = function (config) {
     
     var langFile        = self.controller.loadModuleLang("SecurityZone");
     self.delay          = null;
-    self.timer          = null;
+    self.timeout        = null;
     self.callback       = null;
+    self.mode           = 'on'; // TODO init state
     
     this.vDev = this.controller.devices.create({
         deviceId: "SecurityZone_"+this.id,
         defaults: {
             deviceType: "switchBinary",
             metrics: {
-                
+                level:  self.mode
             }
         },
         overlay: {
@@ -101,7 +100,7 @@ SecurityZone.prototype.stop = function () {
 
     self.callback = null;
     
-    self.stopTimer();
+    self.stopTimeout();
     self.stopDelay();
 
     // TODO disable alarm delay
@@ -126,26 +125,34 @@ SecurityZone.prototype.detach = function (test) {
     self.controller.devices.off(test.device, "change:metrics:change", self.callback);
 };
 
-SecurityZone.prototype.stopTimer = function() {
+SecurityZone.prototype.stopTimeout = function() {
     var self        = this;
-    if (typeof(self.timer) !== 'null') {
-        // TODO stop timeout
-        // TODO event
-        self.timer = null;
+    if (typeof(self.timeout) !== 'null') {
+        clearTimeout(self.timeout);
+        self.timeout = null;
+        self.controller.emit("security.cancel", {
+            type: self.config.type            
+        });
+
     }
 };
 
 SecurityZone.prototype.stopDelay = function () {
     var self        = this;
-    // TODO stop delay
-    // TODO event
+    if (typeof(self.delay) !== 'null') {
+        clearTimeout(self.delay);
+        self.delay = null;
+        self.controller.emit("security.cancel", {
+            type: self.config.type            
+        });
+    }
 };
 
 SecurityZone.prototype.setState = function (state) {
     var self        = this;
     
     if (state === 'off') {
-        self.stopTimer();
+        self.stopTimeout();
         self.stopDelay();
         self.mode = 'off';
         self.vDev.set("metrics:level", 'off');
@@ -156,7 +163,8 @@ SecurityZone.prototype.setState = function (state) {
         // TODO emit event
     } else if (state === 'alarm') {
         // TODO
-    } else if (state === 
+    } else if (state === 'timeout') {
+        
     } else {
         self.vDev.set("metrics:level", 'on');
 
@@ -175,25 +183,29 @@ SecurityZone.prototype.setState = function (state) {
 SecurityZone.prototype.testRule = function () {
     var self = this;
     
-    if (self.vDev.get("metrics:level") == "off")
+    if (self.mode !== "on")
         return;
     
     // TODO check if delay already running
     // TODO check if alarm already running
     
-    var response = false;
+    var trigger = false;
     _.each(self.config.tests,function(test) {
         if (test.testType === "multilevel") {
-            response = response || self.op(self.controller.devices.get(test.testMultilevel.device).get("metrics:level"), test.testMultilevel.testOperator, test.testMultilevel.testValue);
+            trigger = trigger || self.op(self.controller.devices.get(test.testMultilevel.device).get("metrics:level"), test.testMultilevel.testOperator, test.testMultilevel.testValue);
         } else if (test.testType === "binary") {
-            response = response || (self.controller.devices.get(test.testBinary.device).get("metrics:level") === test.testBinary.testValue);
+            trigger = trigger || (self.controller.devices.get(test.testBinary.device).get("metrics:level") === test.testBinary.testValue);
         } else if (test.testType === "remote") {
             var dev = self.controller.devices.get(test.testRemote.device);
-            response = response || ((_.contains(["on", "off"], test.testRemote.testValue) && dev.get("metrics:level") === test.testRemote.testValue) || (_.contains(["upstart", "upstop", "downstart", "downstop"], test.testRemote.testValue) && dev.get("metrics:change") === test.testRemote.testValue));
+            trigger = trigger || ((_.contains(["on", "off"], test.testRemote.testValue) && dev.get("metrics:level") === test.testRemote.testValue) || (_.contains(["upstart", "upstop", "downstart", "downstop"], test.testRemote.testValue) && dev.get("metrics:change") === test.testRemote.testValue));
         }
     });
     
-    if (response) {
+    if (trigger) {
+        if (self.config.delay) {
+            self.setState('timeout');
+            self
+        }
         // TODO trigger delay
         // TODO trigger timeout
         // TOOO emit event
