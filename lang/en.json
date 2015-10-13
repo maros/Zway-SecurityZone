@@ -1,0 +1,20 @@
+{
+   "delay_helper" : "MISSING",
+   "delay_label" : "MISSING",
+   "description" : "MISSING",
+   "test_binary_label" : "MISSING",
+   "test_multi_label" : "MISSING",
+   "tests_label" : "MISSING",
+   "tests_remote_label" : "MISSING",
+   "timeout_helper" : "MISSING",
+   "timeout_label" : "MISSING",
+   "title" : "MISSING",
+   "type_cold" : "MISSING",
+   "type_heat" : "MISSING",
+   "type_helper" : "MISSING",
+   "type_intrusion" : "MISSING",
+   "type_other" : "MISSING",
+   "type_smoke" : "MISSING",
+   "type_tamper" : "MISSING",
+   "type_water" : "MISSING"
+}
