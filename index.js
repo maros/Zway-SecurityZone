@@ -23,7 +23,7 @@ _module = SecurityZone;
 // ----------------------------------------------------------------------------
 
 SecurityZone.prototype.events = [
-    'security.timeout',
+    'security.delayed_alarm',
     'security.alarm',
     'security.cancel'
 ];
@@ -37,14 +37,15 @@ SecurityZone.prototype.init = function (config) {
     self.delay          = null;
     self.timeout        = null;
     self.callback       = null;
-    self.mode           = 'on'; // TODO init state
+    self.icon           = 'on';
+    self.state          = 'on'; // TODO init state
     
     this.vDev = this.controller.devices.create({
         deviceId: "SecurityZone_"+this.id,
         defaults: {
             deviceType: "switchBinary",
             metrics: {
-                level:  self.mode
+                level:  self.state
             }
         },
         overlay: {
@@ -78,6 +79,8 @@ SecurityZone.prototype.initCallback = function() {
             self.attach(test.testRemote);
         }
     });
+    
+    self.setState(self.state);
 };
 
 SecurityZone.prototype.stop = function () {
@@ -125,15 +128,19 @@ SecurityZone.prototype.detach = function (test) {
     self.controller.devices.off(test.device, "change:metrics:change", self.callback);
 };
 
+SecurityZone.prototype.callEvent = function(type) {
+    var self        = this;
+    self.controller.emit("security."+type, {
+        type: self.config.type,
+        source: self.id
+    });
+}
+
 SecurityZone.prototype.stopTimeout = function() {
     var self        = this;
     if (typeof(self.timeout) !== 'null') {
         clearTimeout(self.timeout);
         self.timeout = null;
-        self.controller.emit("security.cancel", {
-            type: self.config.type            
-        });
-
     }
 };
 
@@ -142,52 +149,94 @@ SecurityZone.prototype.stopDelay = function () {
     if (typeof(self.delay) !== 'null') {
         clearTimeout(self.delay);
         self.delay = null;
-        self.controller.emit("security.cancel", {
-            type: self.config.type            
-        });
+        if (self.state === 'delay') {
+            self.callEvent('cancel');
+        }
     }
 };
 
-SecurityZone.prototype.setState = function (state) {
+SecurityZone.prototype.setState = function (newState,timer) {
     var self        = this;
+    timer           = timer || false;
+    level           = self.vDev.get("metrics:level");
     
-    if (state === 'off') {
-        self.stopTimeout();
+    // Turn off alarm from handler
+    if (newState === 'off') {
         self.stopDelay();
-        self.mode = 'off';
+        self.state = 'off';
+        self.icon = 'off';
         self.vDev.set("metrics:level", 'off');
-
-        // TODO disable alarm delay
-        // TODO disable timer
-        // TODO reset mode
-        // TODO emit event
-    } else if (state === 'alarm') {
-        // TODO
-    } else if (state === 'timeout') {
-        
-    } else {
+    // Turn on alarm from handler
+    } else if (newState === 'on'
+        && self.state === 'off') {
+        self.state = 'on';
+        self.icon = 'on';
         self.vDev.set("metrics:level", 'on');
-
+    // Delayed alarm run 
+    } else if (newState === 'alarm'
+        && self.state === 'on'
+        && self.config.delay > 0) {
+        self.icon = 'alarm';
+        self.state = 'delay';
+        self.callEvent('delayed_alarm');
+        self.delay = setTimeout(
+            _.bind(
+                self.setState,
+                self,
+                'alarm',
+                true
+            ),
+            (self.config.delay * 1000)
+        );
+    // Imideate alarm
+    } else if (newState === 'alarm'
+        && (self.state === 'on' || (self.state === 'delay' && timer === true))) {
+        self.icon = 'alarm';
+        self.state = 'alarm';
+        self.callEvent('alarm');
+    // Cancel alarm, no timeout
+    } else if (newState === 'cancel' 
+        && self.state === 'alarm'
+        && self.config.timeout === 0) {
+        self.icon = level;
+        self.state = level;
+        self.callEvent('cancel');
+    // Start timeout
+    } else if (newState === 'cancel'
+        && self.state === 'alarm') {
+        self.state = 'timeout';
+        self.timeout = setTimeout(
+            _.bind(
+                self.setState,
+                self,
+                'cancel',
+                true
+            ),
+            (self.config.timeout * 1000)
+        );
+    // Cancel alarm after timeout
+    } else if (newState === 'cancel'
+        && self.state = 'timeout' 
+        && timer === true) {
+        self.icon = level;
+        self.state = level;
+        self.callEvent('cancel');
+        self.stopTimeout();
+    // New alarm during timeout
+    } else if (newState === 'alarm'
+        && self.state = 'timeout') {
+        self.stopTimeout();
+        self.state = 'alarm';
+    // Nothing matches
+    } else {
+        return;
     }
     
-    self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/SecurityZone/icon_"+state+".png");
-    
-    /*
-    self.controller.emit("SecurityZone.setPos", {
-        azimuth: azimuth,
-        altitude: altitude
-    });
-    */
+    self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/SecurityZone/icon_"+self.icon+".png");
 };
 
 SecurityZone.prototype.testRule = function () {
     var self = this;
-    
-    if (self.mode !== "on")
-        return;
-    
-    // TODO check if delay already running
-    // TODO check if alarm already running
     
     var trigger = false;
     _.each(self.config.tests,function(test) {
@@ -201,18 +250,12 @@ SecurityZone.prototype.testRule = function () {
         }
     });
     
-    if (trigger) {
-        if (self.config.delay) {
-            self.setState('timeout');
-            self
-        }
-        // TODO trigger delay
-        // TODO trigger timeout
-        // TOOO emit event
-        // TODO set mode
-        
-        // Send Notification
-        //self.controller.addNotification("warning", self.message, "module", "SecurityMode");
+    // New alarm
+    if (trigger === true) {
+        self.setState('alarm');
+    // End alarm
+    } else if (trigger === false) {
+        self.setState('cancel');
     }
 };
 
