@@ -194,6 +194,15 @@ SecurityZone.prototype.setState = function (newState,timer) {
         self.icon = 'alarm';
         self.state = 'alarm';
         self.callEvent('alarm');
+        
+        // Send Notification
+        self.controller.addNotification(
+            "warning", 
+            "TODO", 
+            "module", 
+            "SecurityZone"
+        );
+
     // Cancel alarm, no timeout
     } else if (newState === 'cancel' 
         && self.state === 'alarm'
