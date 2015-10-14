@@ -5,7 +5,8 @@ Version: 1.0.0
 -----------------------------------------------------------------------------
 Author: maros@k-1.com <maros@k-1.com>
 Description:
-    Group security devices in zones. 
+    Group security devices in zones. Emits events if sensors are tripped,
+    which can be processed by co-operative plugins.
 
 ******************************************************************************/
 
@@ -34,9 +35,9 @@ SecurityZone.prototype.init = function (config) {
     var self = this;
     
     var langFile        = self.controller.loadModuleLang("SecurityZone");
-    self.delay          = null;
-    self.timeout        = null;
-    self.callback       = null;
+    self.delay          = undefined;
+    self.timeout        = undefined;
+    self.callback       = undefined;
     self.icon           = 'on';
     self.state          = 'on'; // TODO init state
     
@@ -45,6 +46,7 @@ SecurityZone.prototype.init = function (config) {
         defaults: {
             deviceType: "switchBinary",
             metrics: {
+                probeTitle: 'controller',
                 level:  self.state
             }
         },
@@ -88,7 +90,7 @@ SecurityZone.prototype.stop = function () {
     
     if (this.vDev) {
         this.controller.devices.remove(this.vDev.id);
-        this.vDev = null;
+        this.vDev = undefined;
     }
     
     _.each(self.config.tests,function(test) {
@@ -101,7 +103,7 @@ SecurityZone.prototype.stop = function () {
         }
     });
 
-    self.callback = null;
+    self.callback = undefined;
     
     self.stopTimeout();
     self.stopDelay();
@@ -138,17 +140,17 @@ SecurityZone.prototype.callEvent = function(type) {
 
 SecurityZone.prototype.stopTimeout = function() {
     var self        = this;
-    if (typeof(self.timeout) !== 'null') {
+    if (typeof(self.timeout) !== 'undefined') {
         clearTimeout(self.timeout);
-        self.timeout = null;
+        self.timeout = undefined;
     }
 };
 
 SecurityZone.prototype.stopDelay = function () {
     var self        = this;
-    if (typeof(self.delay) !== 'null') {
+    if (typeof(self.delay) !== 'undefined') {
         clearTimeout(self.delay);
-        self.delay = null;
+        self.delay = undefined;
         if (self.state === 'delay') {
             self.callEvent('cancel');
         }
