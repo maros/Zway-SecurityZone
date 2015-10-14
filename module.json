@@ -4,7 +4,7 @@
     "category": "complex_applications",
     "author": "Maroš Kollár",
     "homepage": "http://k-1.com",
-    "icon": "day.png",
+    "icon": "icon.png",
     "version": "1.0.0",
     "moduleName": "SecurityZone",
     "maturity": "stable",
