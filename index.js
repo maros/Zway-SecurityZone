@@ -13,6 +13,13 @@ Description:
 function SecurityZone (id, controller) {
     // Call superconstructor first (AutomationModule)
     SecurityZone.super_.call(this, id, controller);
+    
+    this.delay          = undefined;
+    this.timeout        = undefined;
+    this.callback       = undefined;
+    this.icon           = undefined;
+    this.state          = undefined;
+    this.langFile       = undefined;
 }
 
 inherits(SecurityZone, AutomationModule);
@@ -33,11 +40,6 @@ SecurityZone.prototype.init = function (config) {
     SecurityZone.super_.prototype.init.call(this, config);
     
     var self = this;
-    
-    var langFile        = self.controller.loadModuleLang("SecurityZone");
-    self.delay          = undefined;
-    self.timeout        = undefined;
-    self.callback       = undefined;
     self.icon           = 'on';
     self.state          = 'on'; // TODO init state
     
