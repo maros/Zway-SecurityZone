@@ -19,5 +19,8 @@
     "test_binary_label" : "Binary condition",
     "tests_remote_label" : "Remote condition",
     "tests_label" : "Sensors",
+    "tests_helper" : "Devices that trigger the alarm state",
+    "test_type_helper" : "Type of device to check",
+    "test_value_helper" : "Triggers alarm if value matches",
     "alarm_notification" : "Alarm [TYPE] was detected in zone [ZONE]"
 }

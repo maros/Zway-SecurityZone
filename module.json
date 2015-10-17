@@ -113,12 +113,13 @@
         "fields": {
             "tests": {
                 "label": "__tests_label__",
+                "helper": "__tests_helper__",
                 "fields": {
                     "item": {
                         "fields": {
                             "testType": {
                                 "type": "select",
-                                "default": ""
+                                "helper": "__test_type_helper__"
                             },
                             "testBinary": {
                                 "label": "__test_binary_label__",
@@ -133,6 +134,9 @@
                                         "field": "optionLabels",
                                         "optionLabels": "namespaces:devices_sensorBinary:deviceName,namespaces:devices_switchBinary:deviceName"
                                     }
+                                },
+                                "testValue": {
+                                    "helper": "__test_value_helper__"
                                 }
                             },
                             "testMultilevel": {
@@ -151,6 +155,9 @@
                                     "testOperator": {
                                         "type": "select",
                                         "optionLabels": ["=", "≠", ">", "≥", "<", "≤"]
+                                    },
+                                    "testValue": {
+                                        "helper": "__test_value_helper__"
                                     }
                                 }
                             },
@@ -166,6 +173,9 @@
                                         "datasource": "namespaces",
                                         "field": "optionLabels",
                                         "optionLabels": "namespaces:devices_switchControl:deviceName"
+                                    },
+                                    "testValue": {
+                                        "helper": "__test_value_helper__"
                                     }
                                 }
                             }
