@@ -41,13 +41,15 @@ SecurityZone.prototype.init = function (config) {
     self.icon           = 'on';
     self.state          = 'on'; // TODO init state
     
+    var langFile = self.controller.loadModuleLang("SecurityZone");
+    
     this.vDev = this.controller.devices.create({
         deviceId: "SecurityZone_"+this.id,
         defaults: {
-            deviceType: "switchBinary",
             metrics: {
                 probeTitle: 'controller',
-                level:  self.state
+                level:  self.state,
+                title: langFile.title
             }
         },
         overlay: {
@@ -62,6 +64,8 @@ SecurityZone.prototype.init = function (config) {
         },
         moduleId: this.id
     });
+    
+    self.setState(this.vDev.get('metrics:level'));
     
     setTimeout(_.bind(self.initCallback,self),12000);
 };
@@ -167,18 +171,20 @@ SecurityZone.prototype.setState = function (newState,timer) {
         self.stopDelay();
         self.state = 'off';
         self.icon = 'off';
+        console.log('[SecurityZone] Disarm zone '+self.id);
         self.vDev.set("metrics:level", 'off');
     // Turn on alarm from handler
     } else if (newState === 'on'
         && self.state === 'off') {
         self.state = 'on';
         self.icon = 'on';
+        console.log('[SecurityZone] Arm zone '+self.id);
         self.vDev.set("metrics:level", 'on');
     // Delayed alarm run 
     } else if (newState === 'alarm'
         && self.state === 'on'
         && self.config.delay > 0) {
-        self.icon = 'alarm';
+        self.icon = 'delay';
         self.state = 'delay';
         self.callEvent('delayed_alarm');
         self.delay = setTimeout(
@@ -190,7 +196,8 @@ SecurityZone.prototype.setState = function (newState,timer) {
             ),
             (self.config.delay * 1000)
         );
-    // Imideate alarm
+        console.log('[SecurityZone] Delayed alarm in zone '+self.id);
+    // Immediate alarm
     } else if (newState === 'alarm'
         && (self.state === 'on' || (self.state === 'delay' && timer === true))) {
         self.icon = 'alarm';
@@ -204,7 +211,7 @@ SecurityZone.prototype.setState = function (newState,timer) {
             "module", 
             "SecurityZone"
         );
-
+        console.log('[SecurityZone] Alarm in zone '+self.id);
     // Cancel alarm, no timeout
     } else if (newState === 'cancel' 
         && self.state === 'alarm'
@@ -212,10 +219,12 @@ SecurityZone.prototype.setState = function (newState,timer) {
         self.icon = level;
         self.state = level;
         self.callEvent('cancel');
+        console.log('[SecurityZone] Cancel alarm in zone '+self.id);
     // Start timeout
     } else if (newState === 'cancel'
         && self.state === 'alarm') {
         self.state = 'timeout';
+        self.icon = 'alarm';
         self.timeout = setTimeout(
             _.bind(
                 self.setState,
@@ -225,19 +234,23 @@ SecurityZone.prototype.setState = function (newState,timer) {
             ),
             (self.config.timeout * 1000)
         );
+        console.log('[SecurityZone] Timeout alarm in zone '+self.id);
     // Cancel alarm after timeout
     } else if (newState === 'cancel'
-        && self.state = 'timeout' 
+        && self.state === 'timeout' 
         && timer === true) {
         self.icon = level;
         self.state = level;
         self.callEvent('cancel');
         self.stopTimeout();
+        console.log('[SecurityZone] Cancel alarm in zone '+self.id);
     // New alarm during timeout
     } else if (newState === 'alarm'
-        && self.state = 'timeout') {
+        && self.state === 'timeout') {
         self.stopTimeout();
         self.state = 'alarm';
+        self.icon = 'alarm';
+        console.log('[SecurityZone] Restart alarm in zone '+self.id);
     // Nothing matches
     } else {
         return;
