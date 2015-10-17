@@ -270,7 +270,7 @@ SecurityZone.prototype.testRule = function () {
     }
 };
 
-SecurityMode.prototype.op = function (dval, op, val) {
+SecurityZone.prototype.op = function (dval, op, val) {
     if (op === "=") {
         return dval === val;
     } else if (op === "!=") {
