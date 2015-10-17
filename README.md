@@ -1,23 +1,23 @@
 # Zway-SecurityZone
 
-This plugin creates a zone that can consist of multiple binary and multilevel
-sensors as well as switches. When a check of these devices fail, an alarm is 
-triggered, either immediately or delayed, allowing for a safe disarming of the
-zone.
+This module creates a zone that can checks multiple binary and multilevel
+sensors as well as switches. When a check on one these devices fails, an alarm
+is triggered, either immediately or delayed, allowing for a safe disarming of
+the zone within the given delay period.
 
-The state security zone can be controlled via a virtual device.
+The state security zone can be armed and disarmed via a virtual switch device.
 
-In case of an alarm this plugin will not perform any actions. It will just
-emit an event, which should be catched by other modules in ther automation
-engine.
+In case of an alarm this module will not perform any actions. It will just
+emit an event, which should be catched and processed by other modules in the
+automation engine (eg. sending notifications, turning on alrm sirens, ...)
 
 # Configuration
 
 ## delay
 
-Specifies a delay between detection of the alarm and issuing of the alarm
-event. Turning off the security zone within the delay period prevents the 
-alarm event from being emitted,
+Specifies an optional delay between detection of the alarm and issuing of the 
+alarm event. Turning off the security zone within the delay period prevents 
+the alarm event from being emitted.
 
 ## timeout
 
@@ -29,12 +29,12 @@ Specifies the type of alarm (intrusion, flood, ...)
 
 ## tests
 
-Select the devices and conditions that shall trip the alarm. 
+Select the devices and conditions that shall trip the alarm.
 
 ## tests.testType
 
 Select the type of device you want to test. Binary, MultiLevel or remotes
-(Will require the "Trap events from remotes" module)
+(will require the "Trap events from remotes" module)
 
 ## tests.testBinary, tests.testMultilevel, tests.testRemote
 
@@ -45,22 +45,23 @@ Tests for each device type
 Pick the devices that shall trip the alarm. These are usually door/window 
 sensors, window handles, glass breaking sensors for intrusion alarms, 
 smoke sensors for smoke alarms, ... but can also be switches or temperature
-sensors for low/high temperature alarms
+sensors for low/high temperature alarms.
 
 ## tests.testMultilevel.testOperator
 
-Test operator for MultiLevel sensors/switches
+Test operator for MultiLevel sensors/switches.
 
 ## tests.testBinary.testValue, tests.testMultilevel.testValue, tests.testRemote.testValue
 
-Value that should trip the alarm.
+Value for the device test. If the criteria matches the alarm will be tripped.
 
 # Virtual Devices
 
 This module creates a virtual device that controls the state of the
 security zone.
 
-The device stores the current alarm state under metrics:state
+The device stores the current alarm state under metrics:state. metrics:level
+indicates if the alarm zone is armed or not.
 
 # Events
 
