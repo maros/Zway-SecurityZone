@@ -18,5 +18,6 @@
     "test_multi_label" : "Multilevel condition",
     "test_binary_label" : "Binary condition",
     "tests_remote_label" : "Remote condition",
-    "tests_label" : "Sensors"
+    "tests_label" : "Sensors",
+    "alarm_notification" : "Alarm [TYPE] was detected in zone [ZONE]"
 }

@@ -40,10 +40,10 @@ SecurityZone.prototype.init = function (config) {
     SecurityZone.super_.prototype.init.call(this, config);
     
     var self = this;
+
     self.icon           = 'on';
     self.state          = 'on'; // TODO init state
-    
-    var langFile = self.controller.loadModuleLang("SecurityZone");
+    self.langFile   = self.controller.loadModuleLang("SecurityZone");
     
     this.vDev = this.controller.devices.create({
         deviceId: "SecurityZone_"+this.id,
@@ -51,7 +51,7 @@ SecurityZone.prototype.init = function (config) {
             metrics: {
                 probeTitle: 'controller',
                 level:  self.state,
-                title: langFile.title
+                title: self.langFile.title
             }
         },
         overlay: {
@@ -114,9 +114,6 @@ SecurityZone.prototype.stop = function () {
     self.stopTimeout();
     self.stopDelay();
 
-    // TODO disable alarm delay
-    // TODO disable timer
-    
     SecurityZone.super_.prototype.stop.call(this);
 };
 
@@ -139,8 +136,9 @@ SecurityZone.prototype.detach = function (test) {
 SecurityZone.prototype.callEvent = function(type) {
     var self        = this;
     self.controller.emit("security."+type, {
-        type: self.config.type,
-        source: self.id
+        type:   self.config.type,
+        source: self.id,
+        title:  self.vDev.get('metrics:title')
     });
 }
 
@@ -205,11 +203,14 @@ SecurityZone.prototype.setState = function (newState,timer) {
         self.icon = 'alarm';
         self.state = 'alarm';
         self.callEvent('alarm');
+        var notification = self.langFile.alarm_notification;
+        notification = notification.replace('[TYPE]',self.langFile['type_'+self.config.type]);
+        notification = notification.replace('[ZONE]',self.vDev.get('metrics:title'));
         
         // Send Notification
         self.controller.addNotification(
             "warning", 
-            "TODO", 
+            notification, 
             "module", 
             "SecurityZone"
         );
