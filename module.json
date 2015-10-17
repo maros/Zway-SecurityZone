@@ -95,7 +95,7 @@
             "type": {
                 "type": "string",
                 "required": true,
-                "enum": ["intrusion", "water", "smoke", "co2", "heat", "cold", "tamper", "other" ],
+                "enum": ["intrusion", "flood", "smoke", "gas", "heat", "cold", "tamper", "other" ],
                 "default" : "open"
             },
             "delay": {
@@ -175,8 +175,8 @@
             },
             "type": {
                 "label": "__type_label__",
-                "label": "__type_helper__",
-                "optionLabels": ["__type_intrusion__", "__type_water__", "__type_smoke__", "__type_co2__","__type_heat__","__type_cold__","__type_tamper__","__type_other__"]
+                "helper": "__type_helper__",
+                "optionLabels": ["__type_intrusion__", "__type_flood__", "__type_smoke__", "__type_gas__","__type_heat__","__type_cold__","__type_tamper__","__type_other__"]
             },
             "delay": {
                 "label": "__delay_label__",
