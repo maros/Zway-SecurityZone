@@ -29,10 +29,23 @@ _module = SecurityZone;
 // --- Module instance initialized
 // ----------------------------------------------------------------------------
 
+SecurityZone.prototype.types = [
+    "intrusion", "flood", "smoke", "gas", "heat", "cold", "tamper", "other"
+];
+
 SecurityZone.prototype.events = [
-    'security.delayed_alarm',
-    'security.alarm',
-    'security.cancel'
+    _.flatten(
+        _.map(
+            SecurityZone.prototype.types, 
+            function(type){ 
+                return [
+                    'security.'+type+'.delayed_alarm',
+                    'security.'+type+'.alarm',
+                    'security.'+type+'.delayed_alarm',
+                ]; 
+            }
+        )
+    )
 ];
 
 SecurityZone.prototype.init = function (config) {
@@ -130,10 +143,9 @@ SecurityZone.prototype.detach = function (test) {
     self.controller.devices.off(test.device, "change:metrics:change", self.callback);
 };
 
-SecurityZone.prototype.callEvent = function(type) {
+SecurityZone.prototype.callEvent = function(event) {
     var self        = this;
-    self.controller.emit("security."+type, {
-        type:   self.config.type,
+    self.controller.emit("security."+self.config.type+'.'+event, {
         source: self.id,
         title:  self.vDev.get('metrics:title')
     });

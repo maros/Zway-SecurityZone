@@ -65,17 +65,28 @@ indicates if the alarm zone is armed or not.
 
 # Events
 
-## security.cancel
+Emits different events based on the type of the alarm. Valid types are
+
+* intrusion
+* flood
+* smoke
+* gas
+* heat
+* cold
+* tamper
+* other
+
+## security.$TYPE.cancel
 
 Called whenever an alarm ends or is canceled.
 
-## security.delayed_alarm
+## security.$TYPE.delayed_alarm
 
 Called whenever a delayed alarm is triggered. When the security zone virtual
 device is turned off before the delay finishes, a security.cancel event
 will be emitted, otherwise a security.alarm event will follow.
 
-## security.alarm
+## security.$TYPE.alarm
 
 Called whenever an alarm is triggered
 
