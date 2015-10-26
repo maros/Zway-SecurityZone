@@ -6,6 +6,8 @@ is triggered, either immediately or delayed, allowing for a safe disarming of
 the zone within the given delay period.
 
 The state security zone can be armed and disarmed via a virtual switch device.
+Optionally arming of a zone can also be delayed, ie. allowing for leaving
+the house without tripping alarms.
 
 In case of an alarm this module will not perform any actions. It will just
 emit an event, which should be catched and processed by other modules in the
