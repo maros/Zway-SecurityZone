@@ -70,6 +70,15 @@ security zone.
 The device stores the current alarm state under metrics:state. metrics:level
 indicates if the alarm zone is armed or not.
 
+Possible states are
+
+* on: Zone in armed
+* off: Zone in unarmed
+* delayActivate: Exit delay in progress
+* alarm: Alarm was tripped
+* delayAlarm: Alarm delay in progress
+* timeout: Timeout after alarm was untripped
+
 # Events
 
 Emits different events based on the type of the alarm. Valid types are
