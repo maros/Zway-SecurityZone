@@ -14,7 +14,8 @@ function SecurityZone (id, controller) {
     // Call superconstructor first (AutomationModule)
     SecurityZone.super_.call(this, id, controller);
     
-    this.delay          = undefined;
+    this.delayAlarm     = undefined;
+    this.delayActivate  = undefined;
     this.timeout        = undefined;
     this.callback       = undefined;
     this.icon           = undefined;
@@ -41,7 +42,7 @@ SecurityZone.prototype.events = [
                 return [
                     'security.'+type+'.delayed_alarm',
                     'security.'+type+'.alarm',
-                    'security.'+type+'.delayed_alarm',
+                    'security.'+type+'.cancel',
                 ]; 
             }
         )
@@ -80,6 +81,13 @@ SecurityZone.prototype.init = function (config) {
     });
     
     self.setState(this.vDev.get('metrics:level'));
+    
+    var state = this.vDev.get('metrics:state');
+    if (state === 'delayActivate') {
+        self.startDelayActivate();
+    } else if (state === 'delayAlarm') {
+        self.startDelayAlarm();
+    }
     
     setTimeout(_.bind(self.initCallback,self),12000);
 };
@@ -122,7 +130,8 @@ SecurityZone.prototype.stop = function () {
     self.callback = undefined;
     
     self.stopTimeout();
-    self.stopDelay();
+    self.stopDelayAlarm();
+    self.stopDelayActivate();
 
     SecurityZone.super_.prototype.stop.call(this);
 };
@@ -159,15 +168,51 @@ SecurityZone.prototype.stopTimeout = function() {
     }
 };
 
-SecurityZone.prototype.stopDelay = function () {
+SecurityZone.prototype.stopDelayAlarm = function () {
     var self        = this;
-    if (typeof(self.delay) !== 'undefined') {
-        clearTimeout(self.delay);
-        self.delay = undefined;
-        if (self.vDev.get('metrics:state')  === 'delay') {
+    if (typeof(self.delayAlarm) !== 'undefined') {
+        clearTimeout(self.delayAlarm);
+        self.delayAlarm = undefined;
+        if (self.vDev.get('metrics:state')  === 'delayAlarm') {
             self.callEvent('cancel');
         }
     }
+};
+
+SecurityZone.prototype.stopDelayActivate = function () {
+    var self        = this;
+    if (typeof(self.delayActivate) !== 'undefined') {
+        clearTimeout(self.delayActivate);
+        self.delayActivate = undefined;
+    }
+};
+
+SecurityZone.prototype.startDelayAlarm = function () {
+    var self        = this;
+    self.stopDelayAlarm();
+    self.delayAlarm = setTimeout(
+        _.bind(
+            self.setState,
+            self,
+            'alarm',
+            true
+        ),
+        (self.config.delay_alarm * 1000) // TODO calculate correct timeout on resume
+    );
+};
+
+SecurityZone.prototype.startDelayActivate = function () {
+    var self        = this;
+    self.stopDelayActivate();
+    self.delayActivate = setTimeout(
+        _.bind(
+            self.setState,
+            self,
+            'on',
+            true
+        ),
+        (self.config.delay_activate * 1000) 
+    );
 };
 
 SecurityZone.prototype.setState = function (newState,timer) {
@@ -176,19 +221,28 @@ SecurityZone.prototype.setState = function (newState,timer) {
     level           = self.vDev.get("metrics:level");
     var state       = self.vDev.get('metrics:state');
     
-    // Turn off alarm from handler
+    // Turn off from handler
     if (newState === 'off') {
         if (state !== 'on' && state !== 'off') {
             self.callEvent('cancel');
         }
-        self.stopDelay();
+        self.stopDelayActivate();
+        self.stopDelayAlarm();
         self.icon = 'off';
         console.log('[SecurityZone] Disarm zone '+self.id);
         self.vDev.set("metrics:level", 'off');
         state = 'off';
-    // Turn on alarm from handler
+    // Turn on delayed from handler
     } else if (newState === 'on'
-        && state === 'off') {
+        && state === 'off'
+        && self.config.delay_activate > 0) {
+        self.icon = 'delayActivate';
+        console.log('[SecurityZone] Delayed arming zone '+self.id);
+        state = 'delayActivate';
+        self.startDelayActivate();
+    // Turn on from handler
+    } else if (newState === 'on'
+        && (state === 'off' || (state === 'delayActivate' && timer === true))) {
         self.icon = 'on';
         console.log('[SecurityZone] Arm zone '+self.id);
         self.vDev.set("metrics:level", 'on');
@@ -196,34 +250,23 @@ SecurityZone.prototype.setState = function (newState,timer) {
     // Delayed alarm run 
     } else if (newState === 'alarm'
         && state === 'on'
-        && self.config.delay > 0) {
-        self.icon = 'delay';
-        state = 'delay';
+        && self.config.delay_alarm > 0) {
+        self.icon = 'delayAlarm';
+        state = 'delayAlarm';
         self.callEvent('delayed_alarm');
-        self.delay = setTimeout(
-            _.bind(
-                self.setState,
-                self,
-                'alarm',
-                true
-            ),
-            (self.config.delay * 1000)
-        );
+        self.startDelayAlarm();
         console.log('[SecurityZone] Delayed alarm in zone '+self.id);
     // Immediate alarm
     } else if (newState === 'alarm'
-        && (state === 'on' || (state === 'delay' && timer === true))) {
+        && (state === 'on' || (state === 'delayAlarm' && timer === true))) {
         self.icon = 'alarm';
         state = 'alarm';
         self.callEvent('alarm');
-        var notification = self.langFile.alarm_notification;
-        notification = notification.replace('[TYPE]',self.langFile['type_'+self.config.type]);
-        notification = notification.replace('[ZONE]',self.vDev.get('metrics:title'));
         
         // Send Notification
         self.controller.addNotification(
             "warning", 
-            notification, 
+            self.getMessage('alarm_notification'),
             "module", 
             "SecurityZone"
         );
@@ -275,6 +318,17 @@ SecurityZone.prototype.setState = function (newState,timer) {
     self.vDev.set("metrics:state", state);
     self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/SecurityZone/icon_"+self.icon+".png");
 };
+
+SecurityZone.prototype.getMessage = function(langKey) {
+    var self = this;
+    
+    var notification = self.langFile[langKey];
+    notification = notification.replace('[TYPE]',self.langFile['type_'+self.config.type]);
+    notification = notification.replace('[ZONE]',self.vDev.get('metrics:title'));
+    notification = notification.replace('[STATE]',self.vDev.get('metrics:state'));
+    
+    return notification;
+}
 
 SecurityZone.prototype.testRule = function () {
     var self = this;
