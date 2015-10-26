@@ -13,11 +13,16 @@ automation engine (eg. sending notifications, turning on alrm sirens, ...)
 
 # Configuration
 
-## delay
+## delay_alarm
 
 Specifies an optional delay between detection of the alarm and issuing of the 
 alarm event. Turning off the security zone within the delay period prevents 
 the alarm event from being emitted.
+
+## delay_activate
+
+Specifies an optional delay between activating an alarm zone and arming 
+the security sensors.
 
 ## timeout
 

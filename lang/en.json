@@ -1,8 +1,10 @@
 {
     "title" : "Security zones",
     "description" : "Group multiple security zones. These zones can be activated",
-    "delay_label" : "Alarm delay",
-    "delay_helper" : "Does not go into alarm mode immediately after a sensor in this zone is triggered, but waits for the given time (in seconds)",
+    "delay_alarm_label" : "Alarm delay",
+    "delay_alarm_helper" : "Does not go into alarm mode immediately after a sensor in this zone is triggered, but delays operation for the given time (in seconds)",
+    "delay_activate_label" : "Activation delay",
+    "delay_activate_helper" : "Wait given time (in seconds) before activating an alarm zone. This give you time to leave the house without triggering an alarm.",
     "timeout_label" : "Alarm timeout",
     "timeout_helper" : "Timeout (in seconds) to reset alarm mode after the last sensonor in this zone was untriggered.",
     "type_label" : "Alarm type",
@@ -22,5 +24,5 @@
     "tests_helper" : "Devices that trigger the alarm state",
     "test_type_helper" : "Type of device to check",
     "test_value_helper" : "Triggers alarm if value matches",
-    "alarm_notification" : "Alarm [TYPE] was detected in zone [ZONE]"
+    "alarm_notification" : "Alarm! [TYPE] was detected in zone [ZONE]"
 }
