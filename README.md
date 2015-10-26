@@ -92,6 +92,9 @@ Emits different events based on the type of the alarm. Valid types are
 * tamper
 * other
 
+All events have the name of the zone and the ID of the management device
+as parameters
+
 ## security.$TYPE.cancel
 
 Called whenever an alarm ends or is canceled.

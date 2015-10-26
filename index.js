@@ -154,10 +154,11 @@ SecurityZone.prototype.detach = function (test) {
 
 SecurityZone.prototype.callEvent = function(event) {
     var self        = this;
-    self.controller.emit("security."+self.config.type+'.'+event, {
-        source: self.id,
-        title:  self.vDev.get('metrics:title')
-    });
+    self.controller.emit(
+        "security."+self.config.type+'.'+event, 
+        self.vDev.get('metrics:title'),
+        self.id
+    );
 }
 
 SecurityZone.prototype.stopTimeout = function() {
