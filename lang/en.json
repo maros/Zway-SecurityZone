@@ -2,7 +2,7 @@
     "title" : "Security zones",
     "description" : "Group multiple security zones. These zones can be activated",
     "delay_alarm_label" : "Alarm delay",
-    "delay_alarm_helper" : "Does not go into alarm mode immediately after a sensor in this zone is triggered, but delays operation for the given time (in seconds)",
+    "delay_alarm_helper" : "Does not go into alarm mode immediately after a sensor in this zone is triggered, but delays operation for the given time (in seconds) to allow for safe disarming of the alarm",
     "delay_activate_label" : "Activation delay",
     "delay_activate_helper" : "Wait given time (in seconds) before activating an alarm zone. This give you time to leave the house without triggering an alarm.",
     "timeout_label" : "Alarm timeout",
