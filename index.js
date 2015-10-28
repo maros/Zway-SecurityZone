@@ -154,8 +154,12 @@ SecurityZone.prototype.detach = function (test) {
 
 SecurityZone.prototype.callEvent = function(event) {
     var self        = this;
+    
+    var fullEvent = "security."+self.config.type+'.'+event;
+    
+    console.log('[SecurityZone] Emit '+fullEvent);
     self.controller.emit(
-        "security."+self.config.type+'.'+event, 
+        fullEvent, 
         self.vDev.get('metrics:title'),
         self.id
     );
