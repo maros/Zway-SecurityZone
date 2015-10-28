@@ -1,4 +1,4 @@
-{
+        {
    "author" : "Maroš Kollár",
    "category" : "complex_applications",
    "defaults" : {
@@ -17,11 +17,13 @@
       "fields" : {
          "delay_activate" : {
             "helper" : "__delay_activate_helper__",
-            "label" : "__delay_activate_label__"
+            "label" : "__delay_activate_label__",
+            "order": 2
          },
          "delay_alarm" : {
             "helper" : "__delay_alarm_helper__",
-            "label" : "__delay_alarm_label__"
+            "label" : "__delay_alarm_label__",
+            "order": 3
          },
          "tests" : {
             "fields" : {
@@ -43,7 +45,8 @@
                         "label" : "__test_binary_label__",
                         "testValue" : {
                            "helper" : "__test_value_helper__"
-                        }
+                        },
+                        "order": 2
                      },
                      "testMultilevel" : {
                         "dependencies" : {
@@ -55,7 +58,8 @@
                               "field" : "optionLabels",
                               "label" : "",
                               "optionLabels" : "namespaces:devices_sensorMultilevel:deviceName,namespaces:devices_switchMultilevel:deviceName",
-                              "type" : "select"
+                              "type" : "select",
+                              "order": 1
                            },
                            "testOperator" : {
                               "optionLabels" : [
@@ -66,12 +70,15 @@
                                  "<",
                                  "≤"
                               ],
-                              "type" : "select"
+                              "type" : "select",
+                              "order": 2
                            },
                            "testValue" : {
-                              "helper" : "__test_value_helper__"
+                              "helper" : "__test_value_helper__",
+                              "order": 3
                            }
                         },
+                        "order": 3,
                         "label" : "__test_multi_label__"
                      },
                      "testRemote" : {
@@ -84,27 +91,33 @@
                               "field" : "optionLabels",
                               "label" : "",
                               "optionLabels" : "namespaces:devices_switchControl:deviceName",
-                              "type" : "select"
+                              "type" : "select",
+                              "order": 1
                            },
                            "testValue" : {
-                              "helper" : "__test_value_helper__"
+                              "helper" : "__test_value_helper__",
+                              "order": 2
                            }
                         },
-                        "label" : "__tests_remote_label__"
+                        "label" : "__tests_remote_label__",
+                        "order": 4
                      },
                      "testType" : {
                         "helper" : "__test_type_helper__",
-                        "type" : "select"
+                        "type" : "select",
+                        "order": 1
                      }
                   }
                }
             },
             "helper" : "__tests_helper__",
-            "label" : "__tests_label__"
+            "label" : "__tests_label__",
+            "order": 5
          },
          "timeout" : {
             "helper" : "__timeout_helper__",
-            "label" : "__timeout_label__"
+            "label" : "__timeout_label__",
+            "order": 4
          },
          "type" : {
             "helper" : "__type_helper__",
@@ -118,7 +131,8 @@
                "__type_cold__",
                "__type_tamper__",
                "__type_other__"
-            ]
+            ],
+            "order": 1
          }
       }
    },
@@ -128,6 +142,25 @@
    },
    "schema" : {
       "properties" : {
+          "type" : {
+              "default" : "open",
+              "enum" : [
+                        "intrusion",
+                        "flood",
+                        "smoke",
+                        "gas",
+                        "heat",
+                        "cold",
+                        "tamper",
+                        "other"
+                        ],
+                        "required" : true,
+                        "type" : "string"
+          },
+          "timeout" : {
+              "required" : true,
+              "type" : "integer"
+           },
          "delay_activate" : {
             "required" : true,
             "type" : "integer"
@@ -228,25 +261,6 @@
             },
             "minItems" : 1,
             "type" : "array"
-         },
-         "timeout" : {
-            "required" : true,
-            "type" : "integer"
-         },
-         "type" : {
-            "default" : "open",
-            "enum" : [
-               "intrusion",
-               "flood",
-               "smoke",
-               "gas",
-               "heat",
-               "cold",
-               "tamper",
-               "other"
-            ],
-            "required" : true,
-            "type" : "string"
          }
       },
       "required" : true,
