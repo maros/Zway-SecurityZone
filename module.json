@@ -105,7 +105,13 @@
                      "testType" : {
                         "helper" : "__test_type_helper__",
                         "type" : "select",
-                        "order": 1
+                        "order": 1,
+                        "label": "__test_type_label__",
+                        "optionLabels" : [
+                           "__test_binary_label__",
+                           "__test_multilevel_label__",
+                           "__test_remote_label__"
+                         ]
                      }
                   }
                }
