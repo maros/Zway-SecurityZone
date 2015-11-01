@@ -61,7 +61,8 @@ SecurityZone.prototype.init = function (config) {
         deviceId: "SecurityZone_"+this.id,
         defaults: {
             metrics: {
-                probeTitle: 'controller',
+                probeTitle: 'security',
+                securityType: self.config.type,
                 level: 'off',
                 state: 'off',
                 title: self.langFile.title
@@ -249,6 +250,7 @@ SecurityZone.prototype.setState = function (newState,timer) {
     } else if (newState === 'on'
         && (state === 'off' || (state === 'delayActivate' && timer === true))) {
         self.icon = 'on';
+        // TODO check security zone and notify
         console.log('[SecurityZone] Arm zone '+self.id);
         self.vDev.set("metrics:level", 'on');
         state = 'on';
