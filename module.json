@@ -79,7 +79,7 @@
                            }
                         },
                         "order": 3,
-                        "label" : "__test_multi_label__"
+                        "label" : "__test_multilevel_label__"
                      },
                      "testRemote" : {
                         "dependencies" : {
@@ -99,7 +99,7 @@
                               "order": 2
                            }
                         },
-                        "label" : "__tests_remote_label__",
+                        "label" : "__test_remote_label__",
                         "order": 4
                      },
                      "testType" : {
