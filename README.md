@@ -135,6 +135,12 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or any 
 later version.
 
+Flame icon by João Proença from the Noun Project
+Thermometer icons by Jardson Almeida from the Noun Project
+Water icon by Chris Evans from the Noun Project
+Lock icon by Jems Mayor from the Noun Project
+Person icon by Yamini Ahluwalia from the Noun Project
+
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
