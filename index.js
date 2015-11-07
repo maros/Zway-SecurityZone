@@ -65,7 +65,7 @@ SecurityZone.prototype.init = function (config) {
                 securityType: self.config.type,
                 level: 'off',
                 state: 'off',
-                title: self.langFile.title,
+                title: self.langFile.title+' '+self.langFile['type_'+self.config.type],
                 icon: "/ZAutomation/api/v1/load/modulemedia/SecurityZone/icon.png"
             }
         },
