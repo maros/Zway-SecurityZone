@@ -1,5 +1,5 @@
 {
-   "alarm_notification" : "Alarm! [TYPE] was detected in zone [ZONE]",
+   "alarm_notification" : "Alarm! [TYPE] was detected in zone [ZONE]: [DEVICES]",
    "delay_activate_helper" : "Wait given time (in seconds) before activating an alarm zone. This give you time to leave the house without triggering an alarm.",
    "delay_activate_label" : "Activation delay",
    "delay_alarm_helper" : "Does not go into alarm mode immediately after a sensor in this zone is triggered, but delays operation for the given time (in seconds) to allow for safe disarming of the alarm",
@@ -25,5 +25,6 @@
    "type_label" : "Alarm type",
    "type_other" : "Other",
    "type_smoke" : "Smoke",
-   "type_tamper" : "Device tampering"
+   "type_tamper" : "Tampering",
+   "activate_triggered": "Attention! Zone [ZONE] is already triggered while trying to activate: [DEVICES]"
 }

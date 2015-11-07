@@ -30,10 +30,16 @@ _module = SecurityZone;
 // --- Module instance initialized
 // ----------------------------------------------------------------------------
 
+/**
+ * Static list of all available alarm types
+ */
 SecurityZone.prototype.types = [
     "intrusion", "flood", "smoke", "gas", "heat", "cold", "tamper", "other"
 ];
 
+/**
+ * Static list of all available events
+ */
 SecurityZone.prototype.events = [
     _.flatten(
         _.map(
@@ -61,6 +67,7 @@ SecurityZone.prototype.init = function (config) {
         deviceId: "SecurityZone_"+this.id,
         defaults: {
             metrics: {
+                triggeredDevices: [],
                 probeTitle: 'security',
                 securityType: self.config.type,
                 level: 'off',
@@ -98,7 +105,7 @@ SecurityZone.prototype.initCallback = function() {
     var self = this;
     
     self.tests = {};
-    self.callback   = _.bind(self.testRule,self);
+    self.callback   = _.bind(self.checkAlarm,self);
     
     _.each(self.config.tests,function(test) {
         if (test.testType === "binary") {
@@ -142,18 +149,30 @@ SecurityZone.prototype.stop = function () {
 // --- Module methods
 // ----------------------------------------------------------------------------
 
+/**
+ * Attach events watchers to a device
+ * @param {object} test - A test rule
+ */
 SecurityZone.prototype.attach = function (test) {
     var self        = this;
     self.controller.devices.on(test.device, "change:metrics:level", self.callback);
     self.controller.devices.on(test.device, "change:metrics:change", self.callback);
 };
 
+/**
+ * Detach events watchers from a device
+ * @param {object} test - A test rule
+ */
 SecurityZone.prototype.detach = function (test) {
     var self        = this;
     self.controller.devices.off(test.device, "change:metrics:level", self.callback);
     self.controller.devices.off(test.device, "change:metrics:change", self.callback);
 };
 
+/**
+ * Emit an event
+ * @param {string} event - Event type
+ */
 SecurityZone.prototype.callEvent = function(event) {
     var self        = this;
     
@@ -167,6 +186,9 @@ SecurityZone.prototype.callEvent = function(event) {
     );
 }
 
+/**
+ * Stops alarm timeout if any
+ */
 SecurityZone.prototype.stopTimeout = function() {
     var self        = this;
     if (typeof(self.timeout) !== 'undefined') {
@@ -175,6 +197,9 @@ SecurityZone.prototype.stopTimeout = function() {
     }
 };
 
+/**
+ * Stops delayed alarm timeout if any
+ */
 SecurityZone.prototype.stopDelayAlarm = function () {
     var self        = this;
     if (typeof(self.delayAlarm) !== 'undefined') {
@@ -186,6 +211,9 @@ SecurityZone.prototype.stopDelayAlarm = function () {
     }
 };
 
+/**
+ * Stops delayed activation timeout if any
+ */
 SecurityZone.prototype.stopDelayActivate = function () {
     var self        = this;
     if (typeof(self.delayActivate) !== 'undefined') {
@@ -194,6 +222,9 @@ SecurityZone.prototype.stopDelayActivate = function () {
     }
 };
 
+/**
+ * Starts a delayed alarm
+ */
 SecurityZone.prototype.startDelayAlarm = function () {
     var self        = this;
     self.stopDelayAlarm();
@@ -208,6 +239,9 @@ SecurityZone.prototype.startDelayAlarm = function () {
     );
 };
 
+/**
+ * Starts delayed activation
+ */
 SecurityZone.prototype.startDelayActivate = function () {
     var self        = this;
     self.stopDelayActivate();
@@ -222,6 +256,12 @@ SecurityZone.prototype.startDelayActivate = function () {
     );
 };
 
+/**
+ * Sets new alarm state
+ * @param {string} newState - New state to be set
+ * @param {boolean} timer - Indicates if method was called from a timer (true)
+ * or not (false, default)
+ */
 SecurityZone.prototype.setState = function (newState,timer) {
     var self        = this;
     timer           = timer || false;
@@ -237,6 +277,7 @@ SecurityZone.prototype.setState = function (newState,timer) {
         self.stopDelayAlarm();
         self.icon = 'off';
         console.log('[SecurityZone] Disarm zone '+self.id);
+        self.vDev.set('metrics:triggeredDevcies',[]);
         self.vDev.set("metrics:level", 'off');
         state = 'off';
     // Turn on delayed from handler
@@ -244,6 +285,7 @@ SecurityZone.prototype.setState = function (newState,timer) {
         && state === 'off'
         && self.config.delay_activate > 0) {
         self.icon = 'delayActivate';
+        self.checkActivate();
         console.log('[SecurityZone] Delayed arming zone '+self.id);
         state = 'delayActivate';
         self.startDelayActivate();
@@ -254,6 +296,9 @@ SecurityZone.prototype.setState = function (newState,timer) {
         // TODO check security zone and notify
         console.log('[SecurityZone] Arm zone '+self.id);
         self.vDev.set("metrics:level", 'on');
+        if (state === 'off') {
+            self.checkActivate();
+        }
         state = 'on';
     // Delayed alarm run 
     } else if (newState === 'alarm'
@@ -334,32 +379,107 @@ SecurityZone.prototype.getMessage = function(langKey) {
     notification = notification.replace('[TYPE]',self.langFile['type_'+self.config.type]);
     notification = notification.replace('[ZONE]',self.vDev.get('metrics:title'));
     notification = notification.replace('[STATE]',self.vDev.get('metrics:state'));
+    notification = notification.replace('[DEVICES]',self.vDev.get('metrics:triggeredDevcies').join(', '));
     
     return notification;
 }
 
-SecurityZone.prototype.testRule = function () {
+/**
+ * Tests alarm rules
+ */
+SecurityZone.prototype.checkAlarm = function () {
     var self = this;
     
-    var trigger = false;
-    _.each(self.config.tests,function(test) {
-        if (test.testType === "multilevel") {
-            trigger = trigger || self.op(self.controller.devices.get(test.testMultilevel.device).get("metrics:level"), test.testMultilevel.testOperator, test.testMultilevel.testValue);
-        } else if (test.testType === "binary") {
-            trigger = trigger || (self.controller.devices.get(test.testBinary.device).get("metrics:level") === test.testBinary.testValue);
-        } else if (test.testType === "remote") {
-            var dev = self.controller.devices.get(test.testRemote.device);
-            trigger = trigger || ((_.contains(["on", "off"], test.testRemote.testValue) && dev.get("metrics:level") === test.testRemote.testValue) || (_.contains(["upstart", "upstop", "downstart", "downstop"], test.testRemote.testValue) && dev.get("metrics:change") === test.testRemote.testValue));
-        }
-    });
+    var triggered = self.testsRules();
     
     // New alarm
-    if (trigger === true) {
+    if (triggered === true) {
         self.setState('alarm');
     // End alarm
-    } else if (trigger === false) {
+    } else if (triggered === false) {
         self.setState('cancel');
     }
+};
+
+SecurityZone.prototype.checkActivate = function() {
+    var self = this;
+    
+    self.vDev.set('metrics:triggeredDevcies',[]);
+    var triggered = self.testsRules();
+    if (triggered) {
+        self.controller.addNotification(
+            "warning", 
+            self.getMessage('activate_triggered'),
+            "module", 
+            "SecurityZone"
+        );
+    }
+};
+
+SecurityZone.prototype.testsRules = function() {
+    var self = this;
+    
+    var triggered   = false;
+    var devices     = [];
+    _.each(self.config.tests,function(test) {
+        var testTrigger     = false;
+        var deviceId        = undefined;
+        var testOperator    = undefined;
+        var testValue       = undefined;
+        var comapreKey      = 'level';
+        
+        if (test.testType === "multilevel") {
+            deviceId        = test.testMultilevel.device;
+            testOperator    = test.testMultilevel.testOperator;
+            testValue       = test.testMultilevel.testValue;
+        } else if (test.testType === "binary") {
+            deviceId        = test.testBinary.device;
+            testOperator    = '=';
+            testValue       = test.testBinary.testValue;
+        } else if (test.testType === "remote") {
+            deviceObject    = test.testRemote.device;
+            testOperator    = '=';
+            testValue       = test.testRemote.testValue;
+            if (_.contains(["upstart", "upstop", "downstart", "downstop"], test.testRemote.testValue)) {
+                comapreKey  = 'change';
+            }
+        } else {
+            console.error('[SecurityZone] Inavlid test type');
+            return;
+        }
+        
+        var deviceObject    = self.controller.devices.get(deviceId);
+        if (deviceObject === null) {
+            console.error('[SecurityZone] Could not find device '+deviceId);
+            return;
+        }
+        
+        var comapreValue    = deviceObject.get('metrics:'+comapreKey);
+        if (! self.op(testValue,testOperator,comapreValue)) {
+            return;
+        }
+        
+        testTrigger         = true;
+        var location        = deviceObject.get('location');
+        var room            = _.find(
+            self.controller.locations, 
+            function(item){ return (item.id === location) }
+        );
+        
+        var message         = deviceObject.get('metrics:title');
+        if (typeof(room) === 'object') {
+            message = message + ' (' + room.title + ')';
+        }
+        devices.push(message);
+        
+        triggered = true;
+    });
+    
+    if (triggered) {
+        self.vDev.set('metrics:triggeredDevcies',devices);
+    }
+    
+    return triggered;
 };
 
 SecurityZone.prototype.op = function (dval, op, val) {
