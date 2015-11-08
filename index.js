@@ -68,7 +68,7 @@ SecurityZone.prototype.init = function (config) {
         defaults: {
             metrics: {
                 triggeredDevices: [],
-                probeTitle: 'security',
+                probeTitle: 'SecurityZone',
                 securityType: self.config.type,
                 level: 'off',
                 state: 'off',
