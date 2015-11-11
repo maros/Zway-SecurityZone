@@ -7,11 +7,14 @@ the zone within the given delay period.
 
 The state security zone can be armed and disarmed via a virtual switch device.
 Optionally arming of a zone can also be delayed, ie. allowing for leaving
-the house without tripping alarms.
+the house without tripping alarms. When arming an alarm zone, all sensors
+are checked if they are already tripped (eg. if a window is left open)
 
 In case of an alarm this module will not perform any actions. It will just
 emit an event, which should be catched and processed by other modules in the
 automation engine (eg. sending notifications, turning on alrm sirens, ...)
+The EventWatcher module from https://github.com/maros/Zway-EventWatcher
+can be used to act upon alarms.
 
 # Configuration
 
@@ -19,16 +22,17 @@ automation engine (eg. sending notifications, turning on alrm sirens, ...)
 
 Specifies an optional delay between detection of the alarm and issuing of the 
 alarm event. Turning off the security zone within the delay period prevents 
-the alarm event from being emitted.
+the alarm event from being emitted. Delay is specified in seconds.
 
 ## delay_activate
 
 Specifies an optional delay between activating an alarm zone and arming 
-the security sensors.
+the security sensors. Delay is specified in seconds.
 
 ## timeout
 
 Specifies a timeout for the alarm state after the last sensor was untripped.
+Timeout is specified in seconds.
 
 ## type
 
@@ -67,10 +71,8 @@ Value for the device test. If the criteria matches the alarm will be tripped.
 This module creates a virtual device that controls the state of the
 security zone.
 
-The device stores the current alarm state under metrics:state. metrics:level
-indicates if the alarm zone is armed or not.
-
-Possible states are
+metrics:level indicates if the alarm zone is armed or not. The device stores 
+the current alarm state under metrics:state. Possible states are:
 
 * on: Zone in armed
 * off: Zone in unarmed
