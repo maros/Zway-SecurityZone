@@ -1,4 +1,4 @@
-        {
+{
    "author" : "Maroš Kollár",
    "category" : "complex_applications",
    "defaults" : {
@@ -160,8 +160,8 @@
                         "tamper",
                         "other"
                         ],
-                        "required" : true,
-                        "type" : "string"
+              "required" : true,
+              "type" : "string"
           },
           "timeout" : {
               "required" : true,
@@ -272,6 +272,6 @@
       "required" : true,
       "type" : "object"
    },
-   "singleton" : true,
+   "singleton" : false,
    "version" : "1.02"
 }
