@@ -18,12 +18,12 @@
          "delay_activate" : {
             "helper" : "__delay_activate_helper__",
             "label" : "__delay_activate_label__",
-            "order": 2
+            "order" : 2
          },
          "delay_alarm" : {
             "helper" : "__delay_alarm_helper__",
             "label" : "__delay_alarm_label__",
-            "order": 3
+            "order" : 3
          },
          "tests" : {
             "fields" : {
@@ -43,10 +43,10 @@
                            }
                         },
                         "label" : "__test_binary_label__",
+                        "order" : 2,
                         "testValue" : {
                            "helper" : "__test_value_helper__"
-                        },
-                        "order": 2
+                        }
                      },
                      "testMultilevel" : {
                         "dependencies" : {
@@ -58,8 +58,8 @@
                               "field" : "optionLabels",
                               "label" : "",
                               "optionLabels" : "namespaces:devices_sensorMultilevel:deviceName,namespaces:devices_switchMultilevel:deviceName",
-                              "type" : "select",
-                              "order": 1
+                              "order" : 1,
+                              "type" : "select"
                            },
                            "testOperator" : {
                               "optionLabels" : [
@@ -70,16 +70,16 @@
                                  "<",
                                  "≤"
                               ],
-                              "type" : "select",
-                              "order": 2
+                              "order" : 2,
+                              "type" : "select"
                            },
                            "testValue" : {
                               "helper" : "__test_value_helper__",
-                              "order": 3
+                              "order" : 3
                            }
                         },
-                        "order": 3,
-                        "label" : "__test_multilevel_label__"
+                        "label" : "__test_multilevel_label__",
+                        "order" : 3
                      },
                      "testRemote" : {
                         "dependencies" : {
@@ -91,39 +91,39 @@
                               "field" : "optionLabels",
                               "label" : "",
                               "optionLabels" : "namespaces:devices_switchControl:deviceName",
-                              "type" : "select",
-                              "order": 1
+                              "order" : 1,
+                              "type" : "select"
                            },
                            "testValue" : {
                               "helper" : "__test_value_helper__",
-                              "order": 2
+                              "order" : 2
                            }
                         },
                         "label" : "__test_remote_label__",
-                        "order": 4
+                        "order" : 4
                      },
                      "testType" : {
                         "helper" : "__test_type_helper__",
-                        "type" : "select",
-                        "order": 1,
-                        "label": "__test_type_label__",
+                        "label" : "__test_type_label__",
                         "optionLabels" : [
                            "__test_binary_label__",
                            "__test_multilevel_label__",
                            "__test_remote_label__"
-                         ]
+                        ],
+                        "order" : 1,
+                        "type" : "select"
                      }
                   }
                }
             },
             "helper" : "__tests_helper__",
             "label" : "__tests_label__",
-            "order": 5
+            "order" : 5
          },
          "timeout" : {
             "helper" : "__timeout_helper__",
             "label" : "__timeout_label__",
-            "order": 4
+            "order" : 4
          },
          "type" : {
             "helper" : "__type_helper__",
@@ -138,7 +138,7 @@
                "__type_tamper__",
                "__type_other__"
             ],
-            "order": 1
+            "order" : 1
          }
       }
    },
@@ -148,25 +148,6 @@
    },
    "schema" : {
       "properties" : {
-          "type" : {
-              "default" : "open",
-              "enum" : [
-                        "intrusion",
-                        "flood",
-                        "smoke",
-                        "gas",
-                        "heat",
-                        "cold",
-                        "tamper",
-                        "other"
-                        ],
-              "required" : true,
-              "type" : "string"
-          },
-          "timeout" : {
-              "required" : true,
-              "type" : "integer"
-           },
          "delay_activate" : {
             "required" : true,
             "type" : "integer"
@@ -267,11 +248,30 @@
             },
             "minItems" : 1,
             "type" : "array"
+         },
+         "timeout" : {
+            "required" : true,
+            "type" : "integer"
+         },
+         "type" : {
+            "default" : "open",
+            "enum" : [
+               "intrusion",
+               "flood",
+               "smoke",
+               "gas",
+               "heat",
+               "cold",
+               "tamper",
+               "other"
+            ],
+            "required" : true,
+            "type" : "string"
          }
       },
       "required" : true,
       "type" : "object"
    },
    "singleton" : false,
-   "version" : "1.02"
+   "version" : "1.03"
 }

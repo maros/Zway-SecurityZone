@@ -1,0 +1,16 @@
+1.03 2015 Nov 15, Sun
+    * Secuirity zone is not a singleton
+    * Check for triggered devices when activating a zone. 
+	* Add device names to notification
+    * Add alarm type to title
+    * Update icons - add alarm type
+    * Add security zone type to metrics
+
+1.02 2015 Oct 26, Mon
+    * Delayed activation
+
+1.01 2015 Oct 25, Sun
+    * Update alarm events
+
+1.00 2015 Oct 17, Sat
+    * Initial release
