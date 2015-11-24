@@ -173,17 +173,21 @@ SecurityZone.prototype.detach = function (test) {
  * Emit an event
  * @param {string} event - Event type
  */
-SecurityZone.prototype.callEvent = function(event) {
+SecurityZone.prototype.callEvent = function(event,message) {
     var self        = this;
     
     var fullEvent = "security."+self.config.type+'.'+event;
+    var params = {
+        id:         self.id,
+        title:      self.vDev.get('metrics:title'),
+        location:   self.vDev.get('metrics:location'),
+        type:       self.config.type,
+        event:      event,
+        message:    message
+    };
     
     console.log('[SecurityZone] Emit '+fullEvent);
-    self.controller.emit(
-        fullEvent, 
-        self.vDev.get('metrics:title'),
-        self.id
-    );
+    self.controller.emit(fullEvent,params);
 }
 
 /**
@@ -314,12 +318,13 @@ SecurityZone.prototype.setState = function (newState,timer) {
         && (state === 'on' || (state === 'delayAlarm' && timer === true))) {
         self.icon = 'alarm';
         state = 'alarm';
-        self.callEvent('alarm');
+        var message = self.getMessage('alarm_notification');
+        self.callEvent('alarm',message);
         
         // Send Notification
         self.controller.addNotification(
             "warning", 
-            self.getMessage('alarm_notification'),
+            message,
             "module", 
             "SecurityZone"
         );
