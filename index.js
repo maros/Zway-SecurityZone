@@ -412,7 +412,7 @@ SecurityZone.prototype.checkActivate = function() {
     var triggered = self.testsRules();
     if (triggered) {
         var message = self.getMessage('activate_triggered');
-        self.callEvent('activate',message);
+        self.callEvent('warning',message);
         self.controller.addNotification(
             "warning", 
             message,
