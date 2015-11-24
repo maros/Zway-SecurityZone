@@ -111,6 +111,11 @@ will be emitted, otherwise a security.alarm event will follow.
 
 Called whenever an alarm is triggered
 
+## security.$TYPE.activate
+
+Called whenever the zone is activated, and alarm sensors are still triggered
+(ie. leaving an opened window when leaving)
+
 # Installation
 
 ```shell

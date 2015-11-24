@@ -289,7 +289,7 @@ SecurityZone.prototype.setState = function (newState,timer) {
         && state === 'off'
         && self.config.delay_activate > 0) {
         self.icon = 'delayActivate';
-        self.checkActivate();
+        //self.checkActivate();
         console.log('[SecurityZone] Delayed arming zone '+self.id);
         state = 'delayActivate';
         self.startDelayActivate();
@@ -300,9 +300,7 @@ SecurityZone.prototype.setState = function (newState,timer) {
         // TODO check security zone and notify
         console.log('[SecurityZone] Arm zone '+self.id);
         self.vDev.set("metrics:level", 'on');
-        if (state === 'off') {
-            self.checkActivate();
-        }
+        self.checkActivate();
         state = 'on';
     // Delayed alarm run 
     } else if (newState === 'alarm'
@@ -310,7 +308,8 @@ SecurityZone.prototype.setState = function (newState,timer) {
         && self.config.delay_alarm > 0) {
         self.icon = 'delayAlarm';
         state = 'delayAlarm';
-        self.callEvent('delayed_alarm');
+        var message = self.getMessage('alarm_notification');
+        self.callEvent('delayed_alarm',message);
         self.startDelayAlarm();
         console.log('[SecurityZone] Delayed alarm in zone '+self.id);
     // Immediate alarm
@@ -412,9 +411,11 @@ SecurityZone.prototype.checkActivate = function() {
     self.vDev.set('metrics:triggeredDevcies',[]);
     var triggered = self.testsRules();
     if (triggered) {
+        var message = self.getMessage('activate_triggered');
+        self.callEvent('activate',message);
         self.controller.addNotification(
             "warning", 
-            self.getMessage('activate_triggered'),
+            message,
             "module", 
             "SecurityZone"
         );
