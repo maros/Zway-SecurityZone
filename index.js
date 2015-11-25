@@ -49,6 +49,7 @@ SecurityZone.prototype.events = [
                     'security.'+type+'.delayed_alarm',
                     'security.'+type+'.alarm',
                     'security.'+type+'.cancel',
+                    'security.'+type+'.warning',
                 ]; 
             }
         )
