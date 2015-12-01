@@ -47,8 +47,9 @@ SecurityZone.prototype.events = [
             function(type){ 
                 return [
                     'security.'+type+'.delayed_alarm',
+                    'security.'+type+'.delayed_cancel',
                     'security.'+type+'.alarm',
-                    'security.'+type+'.cancel',
+                    'security.'+type+'.stop',
                     'security.'+type+'.warning',
                 ]; 
             }
@@ -183,6 +184,7 @@ SecurityZone.prototype.callEvent = function(event,message) {
         title:      self.vDev.get('metrics:title'),
         location:   self.vDev.get('metrics:location'),
         type:       self.config.type,
+        delay:      self.config.delayAlarm,
         event:      event,
         message:    message
     };
@@ -211,7 +213,7 @@ SecurityZone.prototype.stopDelayAlarm = function () {
         clearTimeout(self.delayAlarm);
         self.delayAlarm = undefined;
         if (self.vDev.get('metrics:state')  === 'delayAlarm') {
-            self.callEvent('cancel');
+            self.callEvent('delayed_cancel');
         }
     }
 };
@@ -276,8 +278,10 @@ SecurityZone.prototype.setState = function (newState,timer) {
     
     // Turn off from handler
     if (newState === 'off') {
-        if (state !== 'on' && state !== 'off') {
-            self.callEvent('cancel');
+        if (state == 'delayed_alarm') {
+            self.callEvent('delayed_cancel');
+        } else if (state == 'alarm') {
+            self.callEvent('stop');
         }
         self.stopDelayActivate();
         self.stopDelayAlarm();
@@ -307,10 +311,10 @@ SecurityZone.prototype.setState = function (newState,timer) {
     // Delayed alarm run 
     } else if (newState === 'alarm'
         && state === 'on'
-        && self.config.delay_alarm > 0) {
+        && self.config.delayAlarm > 0) {
         self.icon = 'delayAlarm';
-        state = 'delayAlarm';
-        var message = self.getMessage('alarm_notification');
+        state = 'delayed_alarm';
+        message = self.getMessage('alarm_notification');
         self.callEvent('delayed_alarm',message);
         self.startDelayAlarm();
         console.log('[SecurityZone] Delayed alarm in zone '+self.id);
@@ -319,7 +323,7 @@ SecurityZone.prototype.setState = function (newState,timer) {
         && (state === 'on' || (state === 'delayAlarm' && timer === true))) {
         self.icon = 'alarm';
         state = 'alarm';
-        var message = self.getMessage('alarm_notification');
+        message = self.getMessage('alarm_notification');
         self.callEvent('alarm',message);
         
         // Send Notification
@@ -330,16 +334,16 @@ SecurityZone.prototype.setState = function (newState,timer) {
             "SecurityZone"
         );
         console.log('[SecurityZone] Alarm in zone '+self.id);
-    // Cancel alarm, no timeout
-    } else if (newState === 'cancel' 
+    // Stop alarm, no timeout
+    } else if (newState === 'stop' 
         && state === 'alarm'
         && self.config.timeout === 0) {
         self.icon = level;
         state = level;
-        self.callEvent('cancel');
-        console.log('[SecurityZone] Cancel alarm in zone '+self.id);
+        self.callEvent('stop');
+        console.log('[SecurityZone] Stop alarm in zone '+self.id);
     // Start timeout
-    } else if (newState === 'cancel'
+    } else if (newState === 'stop'
         && state === 'alarm') {
         self.icon = 'alarm';
         state = 'timeout';
@@ -347,21 +351,21 @@ SecurityZone.prototype.setState = function (newState,timer) {
             _.bind(
                 self.setState,
                 self,
-                'cancel',
+                'stop',
                 true
             ),
             (self.config.timeout * 1000)
         );
         console.log('[SecurityZone] Timeout alarm in zone '+self.id);
-    // Cancel alarm after timeout
-    } else if (newState === 'cancel'
+    // Stop alarm after timeout
+    } else if (newState === 'stop'
         && state === 'timeout' 
         && timer === true) {
         self.icon = level;
         state = level;
-        self.callEvent('cancel');
+        self.callEvent('stop');
         self.stopTimeout();
-        console.log('[SecurityZone] Cancel alarm in zone '+self.id);
+        console.log('[SecurityZone] Stop alarm in zone '+self.id);
     // New alarm during timeout
     } else if (newState === 'alarm'
         && state === 'timeout') {
@@ -403,7 +407,7 @@ SecurityZone.prototype.checkAlarm = function () {
         self.setState('alarm');
     // End alarm
     } else if (triggered === false) {
-        self.setState('cancel');
+        self.setState('stop');
     }
 };
 

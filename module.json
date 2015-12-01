@@ -2,8 +2,8 @@
    "author" : "Maroš Kollár",
    "category" : "complex_applications",
    "defaults" : {
-      "delay_activate" : 0,
-      "delay_alarm" : 0,
+      "delayActivate" : 0,
+      "delayAlarm" : 0,
       "description" : "__description__",
       "timeout" : 0,
       "title" : "__title__"
@@ -15,12 +15,12 @@
    "moduleName" : "SecurityZone",
    "options" : {
       "fields" : {
-         "delay_activate" : {
+         "delayActivate" : {
             "helper" : "__delay_activate_helper__",
             "label" : "__delay_activate_label__",
             "order" : 2
          },
-         "delay_alarm" : {
+         "delayAlarm" : {
             "helper" : "__delay_alarm_helper__",
             "label" : "__delay_alarm_label__",
             "order" : 3
@@ -148,11 +148,11 @@
    },
    "schema" : {
       "properties" : {
-         "delay_activate" : {
+         "delayActivate" : {
             "required" : true,
             "type" : "integer"
          },
-         "delay_alarm" : {
+         "delayAlarm" : {
             "required" : true,
             "type" : "integer"
          },
