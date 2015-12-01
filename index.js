@@ -189,7 +189,7 @@ SecurityZone.prototype.callEvent = function(event,message) {
     
     console.log('[SecurityZone] Emit '+fullEvent);
     self.controller.emit(fullEvent,params);
-}
+};
 
 /**
  * Stops alarm timeout if any
@@ -240,7 +240,7 @@ SecurityZone.prototype.startDelayAlarm = function () {
             'alarm',
             true
         ),
-        (self.config.delay_alarm * 1000) // TODO calculate correct timeout on resume
+        (self.config.delayAlarm * 1000) // TODO calculate correct timeout on resume
     );
 };
 
@@ -257,7 +257,7 @@ SecurityZone.prototype.startDelayActivate = function () {
             'on',
             true
         ),
-        (self.config.delay_activate * 1000) 
+        (self.config.delayActivate * 1000) 
     );
 };
 
@@ -272,6 +272,7 @@ SecurityZone.prototype.setState = function (newState,timer) {
     timer           = timer || false;
     level           = self.vDev.get("metrics:level");
     var state       = self.vDev.get('metrics:state');
+    var message;
     
     // Turn off from handler
     if (newState === 'off') {
@@ -288,7 +289,7 @@ SecurityZone.prototype.setState = function (newState,timer) {
     // Turn on delayed from handler
     } else if (newState === 'on'
         && state === 'off'
-        && self.config.delay_activate > 0) {
+        && self.config.delayActivate > 0) {
         self.icon = 'delayActivate';
         //self.checkActivate();
         console.log('[SecurityZone] Delayed arming zone '+self.id);
@@ -387,7 +388,7 @@ SecurityZone.prototype.getMessage = function(langKey) {
     notification = notification.replace('[DEVICES]',self.vDev.get('metrics:triggeredDevcies').join(', '));
     
     return notification;
-}
+};
 
 /**
  * Tests alarm rules
@@ -429,10 +430,8 @@ SecurityZone.prototype.testsRules = function() {
     var triggered   = false;
     var devices     = [];
     _.each(self.config.tests,function(test) {
+        var deviceId,testOperator,testValue;
         var testTrigger     = false;
-        var deviceId        = undefined;
-        var testOperator    = undefined;
-        var testValue       = undefined;
         var comapreKey      = 'level';
         
         if (test.testType === "multilevel") {
@@ -470,7 +469,7 @@ SecurityZone.prototype.testsRules = function() {
         var location        = deviceObject.get('location');
         var room            = _.find(
             self.controller.locations, 
-            function(item){ return (item.id === location) }
+            function(item){ return (item.id === location); }
         );
         
         var message         = deviceObject.get('metrics:title');
