@@ -70,8 +70,6 @@ SecurityZone.prototype.init = function (config) {
         defaults: {
             metrics: {
                 triggeredDevices: [],
-                probeTitle: 'SecurityZone',
-                securityType: self.config.type,
                 level: 'off',
                 state: 'off',
                 title: self.langFile.title+' '+self.langFile['type_'+self.config.type],
@@ -79,6 +77,10 @@ SecurityZone.prototype.init = function (config) {
             }
         },
         overlay: {
+            metrics: {
+                securityType: self.config.type
+            },
+            probeType: 'SecurityZone',
             deviceType: 'switchBinary'
         },
         handler: function(command, args) {
