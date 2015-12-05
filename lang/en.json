@@ -15,7 +15,7 @@
    "test_remote_label" : "Remote condition",
    "timeout_helper" : "Timeout (in seconds) to reset alarm mode after the last sensonor in this zone was untriggered.",
    "timeout_label" : "Alarm timeout",
-   "title" : "Security zones",
+   "title" : "Security Zones",
    "type_cold" : "Low temperature",
    "type_flood" : "Flooding",
    "type_gas" : "Gas",
