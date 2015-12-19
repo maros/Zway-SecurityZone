@@ -1,3 +1,13 @@
+1.04 2015 Dec 19, Sat
+    * Set probeType
+    * uppercase title
+    * Cancel != stop
+    * Cleanup jshint
+    * Add warning to list of events
+    * Rename event
+    * Improve activation check
+    * add more data to events
+
 1.03 2015 Nov 15, Sun
     * Secuirity zone is not a singleton
     * Check for triggered devices when activating a zone. 
