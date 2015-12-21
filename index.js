@@ -213,13 +213,14 @@ SecurityZone.prototype.stopTimeout = function() {
  */
 SecurityZone.prototype.stopDelayAlarm = function () {
     var self        = this;
-    if (typeof(self.delayAlarm) !== 'undefined') {
-        clearTimeout(self.delayAlarm);
-        self.delayAlarm = undefined;
+    if (typeof(self.delayAlarmTimeout) !== 'undefined') {
+        clearTimeout(self.delayAlarmTimeout);
+        self.delayAlarmTimeout = undefined;
         if (self.vDev.get('metrics:state')  === 'delayAlarm') {
             self.callEvent('delayed_cancel');
         }
     }
+    self.vDev.set('metrics:delayAlarm',undefined);
 };
 
 /**
@@ -227,26 +228,44 @@ SecurityZone.prototype.stopDelayAlarm = function () {
  */
 SecurityZone.prototype.stopDelayActivate = function () {
     var self        = this;
-    if (typeof(self.delayActivate) !== 'undefined') {
-        clearTimeout(self.delayActivate);
-        self.delayActivate = undefined;
+    if (typeof(self.delayActivateTimeout) !== 'undefined') {
+        clearTimeout(self.delayActivateTimeout);
+        self.delayActivateTimeout = undefined;
     }
+    self.vDev.set('metrics:delayActivate',undefined);
 };
 
 /**
  * Starts a delayed alarm
  */
 SecurityZone.prototype.startDelayAlarm = function () {
-    var self        = this;
+    var self            = this;
+    var dateNow         = (new Date()).getTime();
+    var delayTime       = dateNow + self.config.delayAlarm;
+    var delayRelative   = self.config.delayAlarm;
+    var delayAlarm      = self.vDev.set('metrics:delayAlarm');
+    
     self.stopDelayAlarm();
-    self.delayAlarm = setTimeout(
+    
+    if (typeof(delayAlarm) !== 'undefined') {
+        if (dateNow >= delayAlarm) {
+            self.setState('alarm',true);
+            return;
+        } else {
+            delayTime     = delayAlarm;
+            delayRelative = delayAlarm - dateNow;
+        }
+    }
+    
+    self.vDev.set('metrics:delayAlarm',delayTime);
+    self.delayAlarmTimeout = setTimeout(
         _.bind(
             self.setState,
             self,
             'alarm',
             true
         ),
-        (self.config.delayAlarm * 1000) // TODO calculate correct timeout on resume
+        (delayRelative * 1000) 
     );
 };
 
@@ -254,16 +273,33 @@ SecurityZone.prototype.startDelayAlarm = function () {
  * Starts delayed activation
  */
 SecurityZone.prototype.startDelayActivate = function () {
-    var self        = this;
+    var self            = this;
+    var dateNow         = (new Date()).getTime();
+    var delayTime       = dateNow + self.config.delayActivate;
+    var delayRelative   = self.config.delayActivate;
+    var delayActivate   = self.vDev.set('metrics:delayActivate');
+    
     self.stopDelayActivate();
-    self.delayActivate = setTimeout(
+    
+    if (typeof(delayActivate) !== 'undefined') {
+        if (dateNow >= delayActivate) {
+            self.setState('on',true);
+            return;
+        } else {
+            delayTime     = delayActivate;
+            delayRelative = delayActivate - dateNow;
+        }
+    }
+    
+    self.vDev.set('metrics:delayActivate',delayTime);
+    self.delayActivateTimeout = setTimeout(
         _.bind(
             self.setState,
             self,
             'on',
             true
         ),
-        (self.config.delayActivate * 1000) 
+        (delayRelative * 1000) 
     );
 };
 
