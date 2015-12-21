@@ -212,27 +212,22 @@ SecurityZone.prototype.stopTimeout = function() {
  * Stops delayed alarm timeout if any
  */
 SecurityZone.prototype.stopDelayAlarm = function () {
-    var self        = this;
+    var self = this;
     if (typeof(self.delayAlarmTimeout) !== 'undefined') {
         clearTimeout(self.delayAlarmTimeout);
         self.delayAlarmTimeout = undefined;
-        if (self.vDev.get('metrics:state')  === 'delayAlarm') {
-            self.callEvent('delayed_cancel');
-        }
     }
-    self.vDev.set('metrics:delayAlarm',null);
 };
 
 /**
  * Stops delayed activation timeout if any
  */
 SecurityZone.prototype.stopDelayActivate = function () {
-    var self        = this;
+    var self = this;
     if (typeof(self.delayActivateTimeout) !== 'undefined') {
         clearTimeout(self.delayActivateTimeout);
         self.delayActivateTimeout = undefined;
     }
-    self.vDev.set('metrics:delayActivate',null);
 };
 
 /**
@@ -241,7 +236,6 @@ SecurityZone.prototype.stopDelayActivate = function () {
 SecurityZone.prototype.startDelayAlarm = function () {
     var self            = this;
     var dateNow         = (new Date()).getTime();
-    var delayTime       = dateNow + self.config.delayAlarm;
     var delayRelative   = self.config.delayAlarm;
     var delayAlarm      = self.vDev.get('metrics:delayAlarm');
     
@@ -250,14 +244,16 @@ SecurityZone.prototype.startDelayAlarm = function () {
     if (typeof(delayAlarm) === 'number') {
         if (dateNow >= delayAlarm) {
             self.setState('alarm',true);
+            self.vDev.set('metrics:delayAlarm',null);
             return;
         } else {
-            delayTime     = delayAlarm;
             delayRelative = delayAlarm - dateNow;
         }
+    } else {
+        delayAlarm = dateNow + self.config.delayAlarm;
+        self.vDev.set('metrics:delayAlarm',delayAlarm);
     }
     
-    self.vDev.set('metrics:delayAlarm',delayTime);
     self.delayAlarmTimeout = setTimeout(
         _.bind(
             self.setState,
@@ -275,7 +271,6 @@ SecurityZone.prototype.startDelayAlarm = function () {
 SecurityZone.prototype.startDelayActivate = function () {
     var self            = this;
     var dateNow         = (new Date()).getTime();
-    var delayTime       = dateNow + self.config.delayActivate;
     var delayRelative   = self.config.delayActivate;
     var delayActivate   = self.vDev.get('metrics:delayActivate');
     
@@ -284,14 +279,16 @@ SecurityZone.prototype.startDelayActivate = function () {
     if (typeof(delayActivate) === 'number') {
         if (dateNow >= delayActivate) {
             self.setState('on',true);
+            self.vDev.set('metrics:delayActivate',null);
             return;
         } else {
-            delayTime     = delayActivate;
             delayRelative = delayActivate - dateNow;
         }
+    } else {
+        delayActivate = dateNow + self.config.delayActivate;
+        self.vDev.set('metrics:delayActivate',delayActivate);
     }
     
-    self.vDev.set('metrics:delayActivate',delayTime);
     self.delayActivateTimeout = setTimeout(
         _.bind(
             self.setState,
@@ -418,6 +415,8 @@ SecurityZone.prototype.setState = function (newState,timer) {
         return;
     }
     
+    self.vDev.set('metrics:delayActivate',null);
+    self.vDev.set('metrics:delayAlarm',null);
     self.vDev.set("metrics:state", state);
     self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/SecurityZone/icon_"+self.config.type+"_"+self.icon+".png");
 };
