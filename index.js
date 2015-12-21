@@ -243,7 +243,7 @@ SecurityZone.prototype.startDelayAlarm = function () {
     var dateNow         = (new Date()).getTime();
     var delayTime       = dateNow + self.config.delayAlarm;
     var delayRelative   = self.config.delayAlarm;
-    var delayAlarm      = self.vDev.set('metrics:delayAlarm');
+    var delayAlarm      = self.vDev.get('metrics:delayAlarm');
     
     self.stopDelayAlarm();
     
@@ -277,7 +277,7 @@ SecurityZone.prototype.startDelayActivate = function () {
     var dateNow         = (new Date()).getTime();
     var delayTime       = dateNow + self.config.delayActivate;
     var delayRelative   = self.config.delayActivate;
-    var delayActivate   = self.vDev.set('metrics:delayActivate');
+    var delayActivate   = self.vDev.get('metrics:delayActivate');
     
     self.stopDelayActivate();
     
