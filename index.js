@@ -14,12 +14,12 @@ function SecurityZone (id, controller) {
     // Call superconstructor first (AutomationModule)
     SecurityZone.super_.call(this, id, controller);
     
-    this.delayAlarm     = undefined;
-    this.delayActivate  = undefined;
-    this.timeout        = undefined;
-    this.callback       = undefined;
-    this.icon           = undefined;
-    this.langFile       = undefined;
+    this.delayAlarmTimeout      = undefined;
+    this.delayActivateTimeout   = undefined;
+    this.timeout                = undefined;
+    this.callback               = undefined;
+    this.icon                   = undefined;
+    this.langFile               = undefined;
 }
 
 inherits(SecurityZone, AutomationModule);
@@ -220,7 +220,7 @@ SecurityZone.prototype.stopDelayAlarm = function () {
             self.callEvent('delayed_cancel');
         }
     }
-    self.vDev.set('metrics:delayAlarm',undefined);
+    self.vDev.set('metrics:delayAlarm',null);
 };
 
 /**
@@ -232,7 +232,7 @@ SecurityZone.prototype.stopDelayActivate = function () {
         clearTimeout(self.delayActivateTimeout);
         self.delayActivateTimeout = undefined;
     }
-    self.vDev.set('metrics:delayActivate',undefined);
+    self.vDev.set('metrics:delayActivate',null);
 };
 
 /**
@@ -247,7 +247,7 @@ SecurityZone.prototype.startDelayAlarm = function () {
     
     self.stopDelayAlarm();
     
-    if (typeof(delayAlarm) !== 'undefined') {
+    if (typeof(delayAlarm) === 'number') {
         if (dateNow >= delayAlarm) {
             self.setState('alarm',true);
             return;
@@ -281,7 +281,7 @@ SecurityZone.prototype.startDelayActivate = function () {
     
     self.stopDelayActivate();
     
-    if (typeof(delayActivate) !== 'undefined') {
+    if (typeof(delayActivate) === 'number') {
         if (dateNow >= delayActivate) {
             self.setState('on',true);
             return;
