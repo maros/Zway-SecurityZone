@@ -97,8 +97,10 @@ SecurityZone.prototype.init = function (config) {
     
     var state = this.vDev.get('metrics:state');
     if (state === 'delayActivate') {
+        console.log('[SecurityZone] Restart activation delay');
         self.startDelayActivate();
     } else if (state === 'delayAlarm') {
+        console.log('[SecurityZone] Restart alarm delay');
         self.startDelayAlarm();
     }
     
