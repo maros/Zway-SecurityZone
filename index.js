@@ -93,7 +93,7 @@ SecurityZone.prototype.init = function (config) {
         moduleId: this.id
     });
     
-    self.setState(this.vDev.get('metrics:level'));
+    //self.setState(this.vDev.get('metrics:level'));
     
     var state = this.vDev.get('metrics:state');
     if (state === 'delayActivate') {
@@ -277,6 +277,7 @@ SecurityZone.prototype.startDelayActivate = function () {
     self.stopDelayActivate();
     
     if (typeof(delayActivate) === 'number') {
+        console.log('[SecurityZone] Restart');
         if (dateNow >= delayActivate) {
             self.setState('on',true);
             self.vDev.set('metrics:delayActivate',null);
@@ -285,6 +286,7 @@ SecurityZone.prototype.startDelayActivate = function () {
             delayRelative = delayActivate - dateNow;
         }
     } else {
+        console.log('[SecurityZone] Set');
         delayActivate = dateNow + self.config.delayActivate;
         self.vDev.set('metrics:delayActivate',delayActivate);
     }
@@ -311,6 +313,7 @@ SecurityZone.prototype.setState = function (newState,timer) {
     timer           = timer || false;
     level           = self.vDev.get("metrics:level");
     var state       = self.vDev.get('metrics:state');
+    var cleanup     = false;
     var message;
     
     // Turn off from handler
@@ -324,8 +327,10 @@ SecurityZone.prototype.setState = function (newState,timer) {
         self.stopDelayAlarm();
         self.icon = 'off';
         console.log('[SecurityZone] Disarm zone '+self.id);
+        self.vDev.set('metrics:delayActivate',null);
+        self.vDev.set('metrics:delayAlarm',null);
         self.vDev.set('metrics:triggeredDevcies',[]);
-        self.vDev.set("metrics:level", 'off');
+        self.vDev.set('metrics:level', 'off');
         state = 'off';
     // Turn on delayed from handler
     } else if (newState === 'on'
@@ -334,6 +339,8 @@ SecurityZone.prototype.setState = function (newState,timer) {
         self.icon = 'delayActivate';
         //self.checkActivate();
         console.log('[SecurityZone] Delayed arming zone '+self.id);
+        self.vDev.set('metrics:delayActivate',null);
+        self.vDev.set('metrics:delayAlarm',null);
         state = 'delayActivate';
         self.startDelayActivate();
     // Turn on from handler
@@ -342,25 +349,32 @@ SecurityZone.prototype.setState = function (newState,timer) {
         self.icon = 'on';
         // TODO check security zone and notify
         console.log('[SecurityZone] Arm zone '+self.id);
-        self.vDev.set("metrics:level", 'on');
+        self.vDev.set('metrics:level','on');
+        self.vDev.set('metrics:delayActivate',null);
+        self.vDev.set('metrics:delayAlarm',null);
         self.checkActivate();
         state = 'on';
     // Delayed alarm run 
     } else if (newState === 'alarm'
         && state === 'on'
         && self.config.delayAlarm > 0) {
+        console.log('[SecurityZone] Delayed alarm in zone '+self.id);
         self.icon = 'delayAlarm';
         state = 'delayed_alarm';
         message = self.getMessage('alarm_notification');
+        self.vDev.set('metrics:delayActivate',null);
+        self.vDev.set('metrics:delayAlarm',null);
         self.callEvent('delayed_alarm',message);
         self.startDelayAlarm();
-        console.log('[SecurityZone] Delayed alarm in zone '+self.id);
     // Immediate alarm
     } else if (newState === 'alarm'
         && (state === 'on' || (state === 'delayAlarm' && timer === true))) {
+        console.log('[SecurityZone] Alarm in zone '+self.id);
         self.icon = 'alarm';
         state = 'alarm';
         message = self.getMessage('alarm_notification');
+        self.vDev.set('metrics:delayActivate',null);
+        self.vDev.set('metrics:delayAlarm',null);
         self.callEvent('alarm',message);
         
         // Send Notification
@@ -370,18 +384,18 @@ SecurityZone.prototype.setState = function (newState,timer) {
             "module", 
             "SecurityZone"
         );
-        console.log('[SecurityZone] Alarm in zone '+self.id);
     // Stop alarm, no timeout
     } else if (newState === 'stop' 
         && state === 'alarm'
         && self.config.timeout === 0) {
+        console.log('[SecurityZone] Stop alarm in zone '+self.id);
         self.icon = level;
         state = level;
         self.callEvent('stop');
-        console.log('[SecurityZone] Stop alarm in zone '+self.id);
     // Start timeout
     } else if (newState === 'stop'
         && state === 'alarm') {
+        console.log('[SecurityZone] Timeout alarm in zone '+self.id);
         self.icon = 'alarm';
         state = 'timeout';
         self.timeout = setTimeout(
@@ -393,30 +407,27 @@ SecurityZone.prototype.setState = function (newState,timer) {
             ),
             (self.config.timeout * 1000)
         );
-        console.log('[SecurityZone] Timeout alarm in zone '+self.id);
     // Stop alarm after timeout
     } else if (newState === 'stop'
         && state === 'timeout' 
         && timer === true) {
+        console.log('[SecurityZone] Stop alarm in zone '+self.id);
         self.icon = level;
         state = level;
         self.callEvent('stop');
         self.stopTimeout();
-        console.log('[SecurityZone] Stop alarm in zone '+self.id);
     // New alarm during timeout
     } else if (newState === 'alarm'
         && state === 'timeout') {
+        console.log('[SecurityZone] Restart alarm in zone '+self.id);
         self.stopTimeout();
         self.icon = 'alarm';
         state = 'alarm';
-        console.log('[SecurityZone] Restart alarm in zone '+self.id);
     // Nothing matches
     } else {
         return;
     }
     
-    self.vDev.set('metrics:delayActivate',null);
-    self.vDev.set('metrics:delayAlarm',null);
     self.vDev.set("metrics:state", state);
     self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/SecurityZone/icon_"+self.config.type+"_"+self.icon+".png");
 };
