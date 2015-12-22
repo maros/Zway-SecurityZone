@@ -18,13 +18,13 @@ can be used to act upon alarms.
 
 # Configuration
 
-## delay_alarm
+## delayAlarm
 
 Specifies an optional delay between detection of the alarm and issuing of the 
 alarm event. Turning off the security zone within the delay period prevents 
 the alarm event from being emitted. Delay is specified in seconds.
 
-## delay_activate
+## delayActivate
 
 Specifies an optional delay between activating an alarm zone and arming 
 the security sensors. Delay is specified in seconds.
@@ -77,8 +77,8 @@ the current alarm state under metrics:state. Possible states are:
 * on: Zone in armed
 * off: Zone in unarmed
 * delayActivate: Exit delay in progress
-* alarm: Alarm was tripped
 * delayAlarm: Alarm delay in progress
+* alarm: Alarm was tripped
 * timeout: Timeout after alarm was untripped
 
 # Events
@@ -101,7 +101,7 @@ as parameters
 
 Called whenever an alarm ends or is canceled.
 
-## security.$TYPE.delayed_alarm
+## security.$TYPE.delayAlarm
 
 Called whenever a delayed alarm is triggered. When the security zone virtual
 device is turned off before the delay finishes, a security.cancel event

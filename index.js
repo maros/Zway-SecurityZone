@@ -46,8 +46,8 @@ SecurityZone.prototype.events = [
             SecurityZone.prototype.types, 
             function(type){ 
                 return [
-                    'security.'+type+'.delayed_alarm',
-                    'security.'+type+'.delayed_cancel',
+                    'security.'+type+'.delayAlarm',
+                    'security.'+type+'.delayCancel',
                     'security.'+type+'.alarm',
                     'security.'+type+'.stop',
                     'security.'+type+'.warning',
@@ -318,8 +318,8 @@ SecurityZone.prototype.setState = function (newState,timer) {
     
     // Turn off from handler
     if (newState === 'off') {
-        if (state == 'delayed_alarm') {
-            self.callEvent('delayed_cancel');
+        if (state == 'delayAlarm') {
+            self.callEvent('delayCancel');
         } else if (state == 'alarm') {
             self.callEvent('stop');
         }
@@ -360,11 +360,11 @@ SecurityZone.prototype.setState = function (newState,timer) {
         && self.config.delayAlarm > 0) {
         console.log('[SecurityZone] Delayed alarm in zone '+self.id);
         self.icon = 'delayAlarm';
-        state = 'delayed_alarm';
+        state = 'delayAlarm';
         message = self.getMessage('alarm_notification');
         self.vDev.set('metrics:delayActivate',null);
         self.vDev.set('metrics:delayAlarm',null);
-        self.callEvent('delayed_alarm',message);
+        self.callEvent('delayAlarm',message);
         self.startDelayAlarm();
     // Immediate alarm
     } else if (newState === 'alarm'
