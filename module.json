@@ -41,12 +41,16 @@
                               "optionLabels" : "namespaces:devices_sensorBinary:deviceName,namespaces:devices_switchBinary:deviceName",
                               "type" : "select"
                            }
+                           "testValue" : {
+                                "helper" : "__test_value_helper__",
+                                "optionLabels" : [
+                                                  "__test_value_off__",
+                                                  "__test_value_on__",
+                                               ],
+                           }
                         },
                         "label" : "__test_binary_label__",
                         "order" : 2,
-                        "testValue" : {
-                           "helper" : "__test_value_helper__"
-                        }
                      },
                      "testMultilevel" : {
                         "dependencies" : {
