@@ -1,4 +1,5 @@
 {
+   "activate_triggered" : "Attention! Zone [ZONE] is already triggered while trying to activate: [DEVICES]",
    "alarm_notification" : "Alarm! [TYPE] was detected in zone [ZONE]: [DEVICES]",
    "delay_activate_helper" : "Wait given time (in seconds) before activating an alarm zone. This give you time to leave the house without triggering an alarm.",
    "delay_activate_label" : "Activation delay",
@@ -7,12 +8,14 @@
    "description" : "Group multiple security zones. These zones can be activated",
    "test_binary_label" : "Binary condition",
    "test_multilevel_label" : "Multilevel condition",
+   "test_remote_label" : "Remote condition",
    "test_type_helper" : "Type of device to check",
    "test_type_label" : "Device type",
    "test_value_helper" : "Triggers alarm if value matches",
+   "test_value_off" : "Off",
+   "test_value_on" : "On",
    "tests_helper" : "Devices that trigger the alarm state",
    "tests_label" : "Alarm checks",
-   "test_remote_label" : "Remote condition",
    "timeout_helper" : "Timeout (in seconds) to reset alarm mode after the last sensor in this zone was untriggered.",
    "timeout_label" : "Alarm timeout",
    "title" : "Security Zones",
@@ -25,6 +28,5 @@
    "type_label" : "Alarm type",
    "type_other" : "Other",
    "type_smoke" : "Smoke",
-   "type_tamper" : "Tampering",
-   "activate_triggered": "Attention! Zone [ZONE] is already triggered while trying to activate: [DEVICES]"
+   "type_tamper" : "Tampering"
 }
