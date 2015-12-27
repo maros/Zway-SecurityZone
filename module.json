@@ -8,7 +8,9 @@
       "timeout" : 0,
       "title" : "__title__"
    },
-   "dependencies" : ["BaseModule"],
+   "dependencies" : [
+      "BaseModule"
+   ],
    "homepage" : "http://k-1.com",
    "icon" : "icon.png",
    "maturity" : "stable",
@@ -42,11 +44,11 @@
                               "type" : "select"
                            },
                            "testValue" : {
-                                "helper" : "__test_value_helper__",
-                                "optionLabels" : [
-                                                  "__test_value_off__",
-                                                  "__test_value_on__"
-                                               ]
+                              "helper" : "__test_value_helper__",
+                              "optionLabels" : [
+                                 "__test_value_off__",
+                                 "__test_value_on__"
+                              ]
                            }
                         },
                         "label" : "__test_binary_label__",
@@ -277,5 +279,5 @@
       "type" : "object"
    },
    "singleton" : false,
-   "version" : 1.04
+   "version" : 1.05
 }
