@@ -22,7 +22,7 @@ function SecurityZone (id, controller) {
     this.langFile               = undefined;
 }
 
-inherits(SecurityZone, AutomationModule);
+inherits(SecurityZone, BaseModule);
 
 _module = SecurityZone;
 
@@ -59,13 +59,11 @@ SecurityZone.prototype.events = [
 
 SecurityZone.prototype.init = function (config) {
     SecurityZone.super_.prototype.init.call(this, config);
-    
     var self = this;
-
-    self.icon           = 'on';
-    self.langFile   = self.controller.loadModuleLang("SecurityZone");
     
-    this.vDev = this.controller.devices.create({
+    self.icon           = 'on';
+    
+    self.vDev = this.controller.devices.create({
         deviceId: "SecurityZone_"+this.id,
         defaults: {
             metrics: {
@@ -97,10 +95,10 @@ SecurityZone.prototype.init = function (config) {
     
     var state = this.vDev.get('metrics:state');
     if (state === 'delayActivate') {
-        console.log('[SecurityZone] Restart activation delay');
+        self.log('Restart activation delay');
         self.startDelayActivate();
     } else if (state === 'delayAlarm') {
-        console.log('[SecurityZone] Restart alarm delay');
+        self.log('Restart alarm delay');
         self.startDelayAlarm();
     }
     
@@ -193,7 +191,7 @@ SecurityZone.prototype.callEvent = function(event,message) {
         message:    message
     };
     
-    console.log('[SecurityZone] Emit '+fullEvent);
+    self.log('Emit '+fullEvent);
     self.controller.emit(fullEvent,params);
 };
 
@@ -277,7 +275,7 @@ SecurityZone.prototype.startDelayActivate = function () {
     self.stopDelayActivate();
     
     if (typeof(delayActivate) === 'number') {
-        console.log('[SecurityZone] Restart');
+        self.log('Restart');
         if (dateNow >= delayActivate) {
             self.setState('on',true);
             self.vDev.set('metrics:delayActivate',null);
@@ -286,7 +284,7 @@ SecurityZone.prototype.startDelayActivate = function () {
             delayRelative = delayActivate - dateNow;
         }
     } else {
-        console.log('[SecurityZone] Set');
+        self.log('Set');
         delayActivate = dateNow + self.config.delayActivate;
         self.vDev.set('metrics:delayActivate',delayActivate);
     }
@@ -326,7 +324,7 @@ SecurityZone.prototype.setState = function (newState,timer) {
         self.stopDelayActivate();
         self.stopDelayAlarm();
         self.icon = 'off';
-        console.log('[SecurityZone] Disarm zone '+self.id);
+        self.log('Disarm zone '+self.id);
         self.vDev.set('metrics:delayActivate',null);
         self.vDev.set('metrics:delayAlarm',null);
         self.vDev.set('metrics:triggeredDevcies',[]);
@@ -338,7 +336,7 @@ SecurityZone.prototype.setState = function (newState,timer) {
         && self.config.delayActivate > 0) {
         self.icon = 'delayActivate';
         //self.checkActivate();
-        console.log('[SecurityZone] Delayed arming zone '+self.id);
+        self.log('Delayed arming zone '+self.id);
         self.vDev.set('metrics:delayActivate',null);
         self.vDev.set('metrics:delayAlarm',null);
         state = 'delayActivate';
@@ -348,7 +346,7 @@ SecurityZone.prototype.setState = function (newState,timer) {
         && (state === 'off' || (state === 'delayActivate' && timer === true))) {
         self.icon = 'on';
         // TODO check security zone and notify
-        console.log('[SecurityZone] Arm zone '+self.id);
+        self.log('Arm zone '+self.id);
         self.vDev.set('metrics:level','on');
         self.vDev.set('metrics:delayActivate',null);
         self.vDev.set('metrics:delayAlarm',null);
@@ -358,7 +356,7 @@ SecurityZone.prototype.setState = function (newState,timer) {
     } else if (newState === 'alarm'
         && state === 'on'
         && self.config.delayAlarm > 0) {
-        console.log('[SecurityZone] Delayed alarm in zone '+self.id);
+        self.log('Delayed alarm in zone '+self.id);
         self.icon = 'delayAlarm';
         state = 'delayAlarm';
         message = self.getMessage('alarm_notification');
@@ -369,7 +367,7 @@ SecurityZone.prototype.setState = function (newState,timer) {
     // Immediate alarm
     } else if (newState === 'alarm'
         && (state === 'on' || (state === 'delayAlarm' && timer === true))) {
-        console.log('[SecurityZone] Alarm in zone '+self.id);
+        self.log('Alarm in zone '+self.id);
         self.icon = 'alarm';
         state = 'alarm';
         message = self.getMessage('alarm_notification');
@@ -388,14 +386,14 @@ SecurityZone.prototype.setState = function (newState,timer) {
     } else if (newState === 'stop' 
         && state === 'alarm'
         && self.config.timeout === 0) {
-        console.log('[SecurityZone] Stop alarm in zone '+self.id);
+        self.log('Stop alarm in zone '+self.id);
         self.icon = level;
         state = level;
         self.callEvent('stop');
     // Start timeout
     } else if (newState === 'stop'
         && state === 'alarm') {
-        console.log('[SecurityZone] Timeout alarm in zone '+self.id);
+        self.log('Timeout alarm in zone '+self.id);
         self.icon = 'alarm';
         state = 'timeout';
         self.timeout = setTimeout(
@@ -411,7 +409,7 @@ SecurityZone.prototype.setState = function (newState,timer) {
     } else if (newState === 'stop'
         && state === 'timeout' 
         && timer === true) {
-        console.log('[SecurityZone] Stop alarm in zone '+self.id);
+        self.log('Stop alarm in zone '+self.id);
         self.icon = level;
         state = level;
         self.callEvent('stop');
@@ -419,7 +417,7 @@ SecurityZone.prototype.setState = function (newState,timer) {
     // New alarm during timeout
     } else if (newState === 'alarm'
         && state === 'timeout') {
-        console.log('[SecurityZone] Restart alarm in zone '+self.id);
+        self.log('Restart alarm in zone '+self.id);
         self.stopTimeout();
         self.icon = 'alarm';
         state = 'alarm';
@@ -504,13 +502,13 @@ SecurityZone.prototype.testsRules = function() {
                 comapreKey  = 'change';
             }
         } else {
-            console.error('[SecurityZone] Inavlid test type');
+            self.error('Inavlid test type');
             return;
         }
         
         var deviceObject    = self.controller.devices.get(deviceId);
         if (deviceObject === null) {
-            console.error('[SecurityZone] Could not find device '+deviceId);
+            self.error('Could not find device '+deviceId);
             return;
         }
         

@@ -118,6 +118,8 @@ Called whenever the zone is activated, and alarm sensors are still triggered
 
 # Installation
 
+Install the BaseModule from https://github.com/maros/Zway-BaseModule first
+
 ```shell
 cd /opt/z-way-server/automation/modules
 git clone https://github.com/maros/Zway-SecurityZone.git SecurityZone --branch latest
