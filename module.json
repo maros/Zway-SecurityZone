@@ -11,7 +11,7 @@
    "dependencies" : [
       "BaseModule"
    ],
-   "homepage" : "http://k-1.com",
+   "homepage" : "https://github.com/maros/Zway-SecurityZone/",
    "icon" : "icon.png",
    "maturity" : "stable",
    "moduleName" : "SecurityZone",
