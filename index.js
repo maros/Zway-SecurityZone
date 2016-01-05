@@ -159,8 +159,8 @@ SecurityZone.prototype.stop = function () {
  */
 SecurityZone.prototype.attach = function (test) {
     var self        = this;
-    self.controller.devices.on(test.device, "change:metrics:level", self.callback);
-    self.controller.devices.on(test.device, "change:metrics:change", self.callback);
+    self.controller.devices.on(test.device, "modify:metrics:level", self.callback);
+    self.controller.devices.on(test.device, "modify:metrics:change", self.callback);
 };
 
 /**
@@ -169,8 +169,8 @@ SecurityZone.prototype.attach = function (test) {
  */
 SecurityZone.prototype.detach = function (test) {
     var self        = this;
-    self.controller.devices.off(test.device, "change:metrics:level", self.callback);
-    self.controller.devices.off(test.device, "change:metrics:change", self.callback);
+    self.controller.devices.off(test.device, "modify:metrics:level", self.callback);
+    self.controller.devices.off(test.device, "modify:metrics:change", self.callback);
 };
 
 /**
