@@ -70,7 +70,7 @@ SecurityZone.prototype.init = function (config) {
                 triggeredDevices: [],
                 level: 'off',
                 state: 'off',
-                title: self.langFile.title+' '+self.langFile['type_'+self.config.type],
+                title: self.langFile.m_title+' '+self.langFile['type_'+self.config.type],
                 icon: "/ZAutomation/api/v1/load/modulemedia/SecurityZone/icon.png"
             }
         },
