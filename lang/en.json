@@ -22,7 +22,7 @@
    "timeout_helper" : "Timeout (in seconds) to reset alarm mode after the last sensor in this zone was untriggered.",
    "timeout_label" : "Alarm timeout",
    "type_cold" : "Low temperature",
-   "type_energy" : "MISSING",
+   "type_energy" : "Energy",
    "type_flood" : "Flooding",
    "type_gas" : "Gas",
    "type_heat" : "High temperature",
