@@ -6,7 +6,8 @@
       "delayAlarm" : 0,
       "description" : "__m_descr__",
       "timeout" : 0,
-      "title" : "__m_title__"
+      "title" : "__m_title__",
+      "cancelable" : false
    },
    "dependencies" : [
       "BaseModule"
@@ -124,13 +125,21 @@
             },
             "helper" : "__tests_helper__",
             "label" : "__tests_label__",
-            "order" : 5
+            "order" : 6
          },
          "timeout" : {
             "helper" : "__timeout_helper__",
             "label" : "__timeout_label__",
-            "order" : 4
+            "order" : 5
          },
+         "cancelable" : {
+             "dependencies" : {
+                 "delayAlarm" : "delayAlarm"
+              },
+             "helper" : "__cancelable_helper__",
+             "label" : "__cancelable_label__",
+             "order" : 4
+          },
          "type" : {
             "helper" : "__type_helper__",
             "label" : "__type_label__",
@@ -259,6 +268,11 @@
          "timeout" : {
             "required" : true,
             "type" : "integer"
+         },
+         "cancelable" : {
+             "required" : true,
+             "type" : "boolean",
+             "default" : false
          },
          "type" : {
             "default" : "open",
