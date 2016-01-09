@@ -142,6 +142,7 @@
                "__type_heat__",
                "__type_cold__",
                "__type_tamper__",
+               "__type_energy__",
                "__type_other__"
             ],
             "order" : 1
@@ -269,6 +270,7 @@
                "heat",
                "cold",
                "tamper",
+               "energy",
                "other"
             ],
             "required" : true,

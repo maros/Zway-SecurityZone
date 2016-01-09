@@ -34,7 +34,7 @@ _module = SecurityZone;
  * Static list of all available alarm types
  */
 SecurityZone.prototype.types = [
-    "intrusion", "flood", "smoke", "gas", "heat", "cold", "tamper", "other"
+    "intrusion", "flood", "smoke", "gas", "heat", "cold", "tamper", "energy", "other"
 ];
 
 /**

@@ -92,6 +92,7 @@ Emits different events based on the type of the alarm. Valid types are
 * heat
 * cold
 * tamper
+* energy
 * other
 
 All events have the name of the zone and the ID of the management device
@@ -152,6 +153,7 @@ Thermometer icons by Jardson Almeida from the Noun Project
 Water icon by Chris Evans from the Noun Project
 Lock icon by Jems Mayor from the Noun Project
 Person icon by Yamini Ahluwalia from the Noun Project
+Lightning icon by Steve Laing from the Noun Project
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
