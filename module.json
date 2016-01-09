@@ -2,12 +2,12 @@
    "author" : "Maroš Kollár",
    "category" : "complex_applications",
    "defaults" : {
+      "cancelable" : false,
       "delayActivate" : 0,
       "delayAlarm" : 0,
       "description" : "__m_descr__",
       "timeout" : 0,
-      "title" : "__m_title__",
-      "cancelable" : false
+      "title" : "__m_title__"
    },
    "dependencies" : [
       "BaseModule"
@@ -18,6 +18,14 @@
    "moduleName" : "SecurityZone",
    "options" : {
       "fields" : {
+         "cancelable" : {
+            "dependencies" : {
+               "delayAlarm" : "delayAlarm"
+            },
+            "helper" : "__cancelable_helper__",
+            "label" : "__cancelable_label__",
+            "order" : 4
+         },
          "delayActivate" : {
             "helper" : "__delay_activate_helper__",
             "label" : "__delay_activate_label__",
@@ -132,14 +140,6 @@
             "label" : "__timeout_label__",
             "order" : 5
          },
-         "cancelable" : {
-             "dependencies" : {
-                 "delayAlarm" : "delayAlarm"
-              },
-             "helper" : "__cancelable_helper__",
-             "label" : "__cancelable_label__",
-             "order" : 4
-          },
          "type" : {
             "helper" : "__type_helper__",
             "label" : "__type_label__",
@@ -164,6 +164,11 @@
    },
    "schema" : {
       "properties" : {
+         "cancelable" : {
+            "default" : false,
+            "required" : true,
+            "type" : "boolean"
+         },
          "delayActivate" : {
             "required" : true,
             "type" : "integer"
@@ -269,11 +274,6 @@
             "required" : true,
             "type" : "integer"
          },
-         "cancelable" : {
-             "required" : true,
-             "type" : "boolean",
-             "default" : false
-         },
          "type" : {
             "default" : "open",
             "enum" : [
@@ -295,5 +295,5 @@
       "type" : "object"
    },
    "singleton" : false,
-   "version" : 1.05
+   "version" : 1.06
 }
