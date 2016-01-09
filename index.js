@@ -383,6 +383,11 @@ SecurityZone.prototype.setState = function (newState,timer) {
             "module", 
             "SecurityZone"
         );
+        
+        var triggered = self.testsRules();
+        if (triggered === false) {
+            setTimeout(self.callback,1000*5);
+        }
     // Stop alarm, no timeout
     } else if (newState === 'stop' 
         && state === 'alarm'
