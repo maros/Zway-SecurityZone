@@ -528,7 +528,7 @@ SecurityZone.prototype.testsRules = function() {
         }
         
         var comapreValue    = deviceObject.get('metrics:'+comapreKey);
-        if (! self.op(testValue,testOperator,comapreValue)) {
+        if (! self.op(comapreValue,testOperator,testValue)) {
             return;
         }
         
