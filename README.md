@@ -24,6 +24,11 @@ Specifies an optional delay between detection of the alarm and issuing of the
 alarm event. Turning off the security zone within the delay period prevents 
 the alarm event from being emitted. Delay is specified in seconds.
 
+## cancelable
+
+This option controls if delayed alarms continue after the alarm condition
+has gone away, or if they should continue (default).
+
 ## delayActivate
 
 Specifies an optional delay between activating an alarm zone and arming 
@@ -37,6 +42,10 @@ Timeout is specified in seconds.
 ## type
 
 Specifies the type of alarm (intrusion, flood, ...)
+
+## otherType
+
+Custom alarm types can be used when type is set to 'other'
 
 ## tests
 
@@ -93,14 +102,14 @@ Emits different events based on the type of the alarm. Valid types are
 * cold
 * tamper
 * energy
-* other
+* other (user defined type)
 
 All events have the name of the zone and the ID of the management device
 as parameters
 
-## security.$TYPE.cancel
+## security.$TYPE.stop
 
-Called whenever an alarm ends or is canceled.
+Called whenever an alarm ends or is stopped.
 
 ## security.$TYPE.delayAlarm
 
@@ -108,9 +117,13 @@ Called whenever a delayed alarm is triggered. When the security zone virtual
 device is turned off before the delay finishes, a security.cancel event
 will be emitted, otherwise a security.alarm event will follow.
 
+## security.$TYPE.delayCancel
+
+Called when a delayed alarm is cancelled in time.
+
 ## security.$TYPE.alarm
 
-Called whenever an alarm is triggered
+Called whenever an alarm is triggered.
 
 ## security.$TYPE.warning
 
