@@ -24,17 +24,17 @@
             },
             "helper" : "__cancelable_helper__",
             "label" : "__cancelable_label__",
-            "order" : 4
+            "order" : 5
          },
          "delayActivate" : {
             "helper" : "__delay_activate_helper__",
             "label" : "__delay_activate_label__",
-            "order" : 2
+            "order" : 3
          },
          "delayAlarm" : {
             "helper" : "__delay_alarm_helper__",
             "label" : "__delay_alarm_label__",
-            "order" : 3
+            "order" : 4
          },
          "tests" : {
             "fields" : {
@@ -133,12 +133,12 @@
             },
             "helper" : "__tests_helper__",
             "label" : "__tests_label__",
-            "order" : 6
+            "order" : 7
          },
          "timeout" : {
             "helper" : "__timeout_helper__",
             "label" : "__timeout_label__",
-            "order" : 5
+            "order" : 6
          },
          "type" : {
             "helper" : "__type_helper__",
@@ -155,6 +155,13 @@
                "__type_other__"
             ],
             "order" : 1
+         },
+         "otherType": {
+             "label" : "__other_type_label__",
+             "dependencies": {
+                 "type": "other"
+             },
+             "order" : 2
          }
       }
    },
@@ -289,7 +296,13 @@
             ],
             "required" : true,
             "type" : "string"
+         },
+         "otherType" : {
+             "type" : "string"
          }
+      },
+      "dependencies": {
+          "otherType": ["type"]
       },
       "required" : true,
       "type" : "object"

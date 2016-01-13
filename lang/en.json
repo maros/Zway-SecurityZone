@@ -9,6 +9,7 @@
    "delay_alarm_label" : "Alarm delay",
    "m_descr" : "Group multiple security zones. These zones can be activated",
    "m_title" : "Security Zones",
+   "other_type_label" : "Custom event type",
    "test_binary_label" : "Binary condition",
    "test_multilevel_label" : "Multilevel condition",
    "test_remote_label" : "Remote condition",

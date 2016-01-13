@@ -180,13 +180,17 @@ SecurityZone.prototype.detach = function (test) {
  */
 SecurityZone.prototype.callEvent = function(event,message) {
     var self        = this;
+    var type        = self.config.type;
+    if (type === 'other')
+        type        = self.config.otherType || type;
     
-    var fullEvent = "security."+self.config.type+'.'+event;
+    var fullEvent = "security."+type+'.'+event;
     var params = {
         id:         self.id,
         title:      self.vDev.get('metrics:title'),
         location:   self.vDev.get('metrics:location'),
-        type:       self.config.type,
+        //cancelable: self.config.cancelable,
+        type:       type,
         delay:      self.config.delayAlarm,
         event:      event,
         message:    message

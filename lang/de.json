@@ -9,6 +9,7 @@
    "delay_alarm_label" : "Alarm Verzögerung",
    "m_descr" : "Group multiple security zones. These zones can be activated",
    "m_title" : "Sicherheits Zone",
+   "other_type_label" : "Eigne Alarm Art",
    "test_binary_label" : "Binäre Bedingung",
    "test_multilevel_label" : "Analoge Bedingung",
    "test_remote_label" : "Fernbedienungs Bedingungen",
