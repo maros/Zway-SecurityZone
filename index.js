@@ -500,6 +500,8 @@ SecurityZone.prototype.testsRules = function() {
     
     var triggered   = false;
     var devices     = [];
+    var testCount   = 0;
+    
     _.each(self.config.tests,function(test) {
         var deviceId,testOperator,testValue;
         var testTrigger     = false;
@@ -549,8 +551,16 @@ SecurityZone.prototype.testsRules = function() {
         }
         devices.push(message);
         
-        triggered = true;
+        testCount ++;
+        self.log('Triggered security alarm from '+devices.id);
     });
+    
+    if (typeof(self.config.testThreshold) === 'number') {
+        if (testCount >= self.config.testThreshold)
+            triggered = true;
+    } else if (testCount > 0) {
+        triggered = true;
+    }
     
     if (triggered) {
         self.vDev.set('metrics:triggeredDevcies',devices);

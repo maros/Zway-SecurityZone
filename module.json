@@ -135,6 +135,11 @@
             "label" : "__tests_label__",
             "order" : 7
          },
+         "testThreshold" : {
+             "helper" : "__test_threshold_helper__",
+             "label" : "__tests_threshold_label__",
+             "order" : 8
+          },
          "timeout" : {
             "helper" : "__timeout_helper__",
             "label" : "__timeout_label__",
@@ -184,6 +189,9 @@
             "required" : true,
             "type" : "integer"
          },
+         "testThreshold" : {
+             "type" : "integer"
+          },
          "tests" : {
             "items" : {
                "properties" : {

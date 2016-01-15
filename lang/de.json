@@ -32,5 +32,8 @@
    "type_label" : "Alarm Art",
    "type_other" : "Andere",
    "type_smoke" : "Rauch",
-   "type_tamper" : "Manipulation"
+   "type_tamper" : "Manipulation",
+   "test_threshold_label": "Alarm Bedingungs Schwellenwert",
+   "test_threshold_helper": "Wenn diese Option gesetzt ist, dann wird Alarm nur dann ausgelöst wenn eine bestimmte Anzahl an Bedingungen erfüllt ist. Diese Funktion kann genutzt werden um Fehlalarme durch einzelne defekte Sensoren zu vermeiden."
+
 }

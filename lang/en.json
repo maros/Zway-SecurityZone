@@ -1,7 +1,7 @@
 {
    "activate_triggered" : "Attention! Zone [ZONE] is already triggered while trying to activate: [DEVICES]",
    "alarm_notification" : "Alarm! [TYPE] was detected in zone [ZONE]: [DEVICES]",
-   "cancelable_helper" : "If this option is enabled, delayed alarms will be canceled once the alarm conditions is resolved. Otherwise, if this option is not enabled, the delayed alarm will trigger an alarm after the timeout period, no matter if the alarm condition is still present or not.",
+   "cancelable_helper" : "If this option is enabled, delayed alarms will be canceled if the alarm sensors are untriggered during the alarm delay period. Otherwise, if this option is not enabled, an alarm will be triggered, no matter if the alarm condition is still present or not.",
    "cancelable_label" : "Cancelable delayed alarm",
    "delay_activate_helper" : "Wait given time (in seconds) before activating an alarm zone. eg.  this can be used to leave enough time to leave the house without triggering an alarm",
    "delay_activate_label" : "Activation delay",
@@ -32,5 +32,7 @@
    "type_label" : "Alarm type",
    "type_other" : "Other",
    "type_smoke" : "Smoke",
-   "type_tamper" : "Tampering"
+   "type_tamper" : "Tampering",
+   "test_threshold_label": "Test threshold",
+   "test_threshold_helper": "If this option is set, alarm will only be triggered if a certain number of tests fail. This can be used to prevent triggering alarms from stray sensor reports. By default it is sufficient for only one test to fail for an alarm to be triggered."
 }
