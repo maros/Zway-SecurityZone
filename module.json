@@ -137,7 +137,7 @@
          },
          "testThreshold" : {
              "helper" : "__test_threshold_helper__",
-             "label" : "__tests_threshold_label__",
+             "label" : "__test_threshold_label__",
              "order" : 8
           },
          "timeout" : {
