@@ -75,6 +75,13 @@ Test operator for MultiLevel sensors/switches.
 
 Value for the device test. If the criteria matches the alarm will be tripped.
 
+## testThreshold
+
+If this option is set, alarm will only be triggered if a certain number of 
+tests fail. This can be used to prevent triggering alarms from stray sensor 
+reports. By default it is sufficient for only one test to fail for an alarm #
+to be triggered.
+
 # Virtual Devices
 
 This module creates a virtual device that controls the state of the
