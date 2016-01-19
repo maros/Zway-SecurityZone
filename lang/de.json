@@ -7,12 +7,14 @@
    "delay_activate_label" : "Aktivierungs Verzögerung",
    "delay_alarm_helper" : "Does not go into alarm mode immediately after a sensor in this zone is triggered, but delays operation for the given time (in seconds) to allow for safe disarming of the alarm",
    "delay_alarm_label" : "Alarm Verzögerung",
-   "m_descr" : "Group multiple security zones. These zones can be activated",
+   "m_descr" : "Group multiple security zones. These zones can be activated\nSiehe https://github.com/maros/Zway-SecurityZone//blob/master/README.md für detailliertere Dokumentation.",
    "m_title" : "Sicherheits Zone",
    "other_type_label" : "Eigne Alarm Art",
    "test_binary_label" : "Binäre Bedingung",
    "test_multilevel_label" : "Analoge Bedingung",
    "test_remote_label" : "Fernbedienungs Bedingungen",
+   "test_threshold_helper" : "Wenn diese Option gesetzt ist, dann wird Alarm nur dann ausgelöst wenn eine bestimmte Anzahl an Bedingungen erfüllt ist. Diese Funktion kann genutzt werden um Fehlalarme durch einzelne defekte Sensoren zu vermeiden.",
+   "test_threshold_label" : "Alarm Bedingungs Schwellenwert",
    "test_type_helper" : "Type of device to check",
    "test_type_label" : "Art der Bedingung",
    "test_value_helper" : "Triggers alarm if value matches",
@@ -32,8 +34,5 @@
    "type_label" : "Alarm Art",
    "type_other" : "Andere",
    "type_smoke" : "Rauch",
-   "type_tamper" : "Manipulation",
-   "test_threshold_label": "Alarm Bedingungs Schwellenwert",
-   "test_threshold_helper": "Wenn diese Option gesetzt ist, dann wird Alarm nur dann ausgelöst wenn eine bestimmte Anzahl an Bedingungen erfüllt ist. Diese Funktion kann genutzt werden um Fehlalarme durch einzelne defekte Sensoren zu vermeiden."
-
+   "type_tamper" : "Manipulation"
 }

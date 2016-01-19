@@ -7,12 +7,14 @@
    "delay_activate_label" : "Activation delay",
    "delay_alarm_helper" : "Does not go into alarm mode immediately after a sensor in this zone is triggered, but delays operation for the given time (in seconds) to allow for safe disarming of the alarm",
    "delay_alarm_label" : "Alarm delay",
-   "m_descr" : "Group multiple security zones. These zones can be activated",
+   "m_descr" : "Group multiple security zones. These zones can be activated\nCheck https://github.com/maros/Zway-SecurityZone//blob/master/README.md for detailed documentation.",
    "m_title" : "Security Zones",
    "other_type_label" : "Custom event type",
    "test_binary_label" : "Binary condition",
    "test_multilevel_label" : "Multilevel condition",
    "test_remote_label" : "Remote condition",
+   "test_threshold_helper" : "If this option is set, alarm will only be triggered if a certain number of tests fail. This can be used to prevent triggering alarms from stray sensor reports. By default it is sufficient for only one test to fail for an alarm to be triggered.",
+   "test_threshold_label" : "Checks threshold",
    "test_type_helper" : "Type of device to check",
    "test_type_label" : "Device type",
    "test_value_helper" : "Triggers alarm if value matches",
@@ -32,7 +34,5 @@
    "type_label" : "Alarm type",
    "type_other" : "Other",
    "type_smoke" : "Smoke",
-   "type_tamper" : "Tampering",
-   "test_threshold_label": "Test threshold",
-   "test_threshold_helper": "If this option is set, alarm will only be triggered if a certain number of tests fail. This can be used to prevent triggering alarms from stray sensor reports. By default it is sufficient for only one test to fail for an alarm to be triggered."
+   "type_tamper" : "Tampering"
 }

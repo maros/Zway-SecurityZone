@@ -1,5 +1,7 @@
 # Zway-SecurityZone
 
+This module can be used to create 
+
 This module creates a zone that can checks multiple binary and multilevel
 sensors as well as switches. When a check on one these devices fails, an alarm
 is triggered, either immediately or delayed, allowing for a safe disarming of
@@ -12,7 +14,7 @@ are checked if they are already tripped (eg. if a window is left open)
 
 In case of an alarm this module will not perform any actions. It will just
 emit an event, which should be catched and processed by other modules in the
-automation engine (eg. sending notifications, turning on alrm sirens, ...)
+automation engine (eg. sending notifications, turning on alarm sirens, ...)
 The EventWatcher module from https://github.com/maros/Zway-EventWatcher
 can be used to act upon alarms.
 
