@@ -7,7 +7,7 @@
    "delay_activate_label" : "Activation delay",
    "delay_alarm_helper" : "Does not go into alarm mode immediately after a sensor in this zone is triggered, but delays operation for the given time (in seconds) to allow for safe disarming of the alarm",
    "delay_alarm_label" : "Alarm delay",
-   "m_descr" : "Group multiple security zones. These zones can be activated<br>Check  <a href=\"https://github.com/maros/Zway-SecurityZone/blob/master/README.md\">github.com/maros/Zway-SecurityZone</a> for detailed documentation.",
+   "m_descr" : "Group multiple security zones. These zones can be activated<br>Check <a href=https://github.com/maros/Zway-SecurityZone/blob/master/README.md>github.com/maros/Zway-SecurityZone</a> for detailed documentation.",
    "m_title" : "Security Zones",
    "other_type_label" : "Custom event type",
    "test_binary_label" : "Binary condition",
