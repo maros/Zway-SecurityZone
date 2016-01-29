@@ -516,7 +516,7 @@ SecurityZone.prototype.testsRules = function() {
             testOperator    = '=';
             testValue       = test.testBinary.testValue;
         } else if (test.testType === "remote") {
-            deviceObject    = test.testRemote.device;
+            deviceId        = test.testRemote.device;
             testOperator    = '=';
             testValue       = test.testRemote.testValue;
             if (_.contains(["upstart", "upstop", "downstart", "downstop"], test.testRemote.testValue)) {
@@ -552,7 +552,7 @@ SecurityZone.prototype.testsRules = function() {
         devices.push(message);
         
         testCount ++;
-        self.log('Triggered security alarm from '+devices.id);
+        self.log('Triggered test from '+deviceObject.get('metrics:title')+' ('+deviceId+')');
     });
     
     if (typeof(self.config.testThreshold) === 'number') {
