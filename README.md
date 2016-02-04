@@ -1,7 +1,5 @@
 # Zway-SecurityZone
 
-This module can be used to create 
-
 This module creates a zone that can checks multiple binary and multilevel
 sensors as well as switches. When a check on one these devices fails, an alarm
 is triggered, either immediately or delayed, allowing for a safe disarming of
@@ -33,7 +31,7 @@ has gone away, or if they should continue (default).
 
 ## delayActivate
 
-Specifies an optional delay between activating an alarm zone and arming 
+Specifies an optional delay between arming an alarm zone and activating
 the security sensors. Delay is specified in seconds.
 
 ## timeout
@@ -43,7 +41,7 @@ Timeout is specified in seconds.
 
 ## type
 
-Specifies the type of alarm (intrusion, flood, ...)
+Specifies the type of alarm (intrusion, flood, ... or other)
 
 ## otherType
 
@@ -81,7 +79,7 @@ Value for the device test. If the criteria matches the alarm will be tripped.
 
 If this option is set, alarm will only be triggered if a certain number of 
 tests fail. This can be used to prevent triggering alarms from stray sensor 
-reports. By default it is sufficient for only one test to fail for an alarm #
+reports. By default it is sufficient for only one test to fail for an alarm
 to be triggered.
 
 # Virtual Devices
@@ -111,7 +109,7 @@ Emits different events based on the type of the alarm. Valid types are
 * cold
 * tamper
 * energy
-* other (user defined type)
+* other (custom user defined type)
 
 All events have the name of the zone and the ID of the management device
 as parameters
