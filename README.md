@@ -60,6 +60,12 @@ Select the type of device you want to test. Binary, MultiLevel or remotes
 
 Tests for each device type
 
+## tests.testBinary.check, tests.testMultilevel.check
+
+When a security zone is activated checks will be performed if the alarm 
+condition is already met. This option specifies the time when these checks
+should be performed: Either immediately, delayed or never.
+
 ## tests.testBinary.device, tests.testMultilevel.device, tests.testRemote.device
 
 Pick the devices that shall trip the alarm. These are usually door/window 

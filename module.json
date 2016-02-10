@@ -17,6 +17,17 @@
    "maturity" : "stable",
    "moduleName" : "SecurityZone",
    "options" : {
+       "definitions" : {
+           "check" : {
+              "label" : "__label_check__",
+              "optionLabels" : [
+                    "__check_immediate__",
+                    "__check_delayed__",
+                    "__check_never__"
+               ],
+               "type" : "select"
+           }
+       },
       "fields" : {
          "cancelable" : {
             "dependencies" : {
@@ -50,14 +61,20 @@
                               "field" : "optionLabels",
                               "label" : "",
                               "optionLabels" : "namespaces:devices_sensorBinary:deviceName,namespaces:devices_switchBinary:deviceName",
-                              "type" : "select"
+                              "type" : "select",
+                              "order" : 1
                            },
                            "testValue" : {
                               "helper" : "__test_value_helper__",
                               "optionLabels" : [
                                  "__test_value_off__",
                                  "__test_value_on__"
-                              ]
+                              ],
+                              "order" : 2
+                           },
+                           "check": {
+                               "$ref" : "#/definitions/check",
+                               "order": 3
                            }
                         },
                         "label" : "__test_binary_label__",
@@ -91,6 +108,10 @@
                            "testValue" : {
                               "helper" : "__test_value_helper__",
                               "order" : 3
+                           },
+                           "check": {
+                               "$ref" : "#/definitions/check",
+                               "order": 4
                            }
                         },
                         "label" : "__test_multilevel_label__",
@@ -175,6 +196,18 @@
       "type" : "git"
    },
    "schema" : {
+       "definitions" : {
+           "check" : {
+               "default" : "delayed",
+               "enum" : [
+                  "immediate",
+                  "delayed",
+                  "never"
+               ],
+               "required" : true,
+               "type" : "string"
+           }
+       },
       "properties" : {
          "cancelable" : {
             "default" : false,
@@ -212,6 +245,9 @@
                            ],
                            "required" : true,
                            "type" : "string"
+                        },
+                        "check": {
+                            "$ref" : "#/definitions/check"
                         }
                      },
                      "type" : "object"
@@ -240,6 +276,9 @@
                         "testValue" : {
                            "required" : true,
                            "type" : "number"
+                        },
+                        "check": {
+                            "$ref" : "#/definitions/check"
                         }
                      },
                      "type" : "object"

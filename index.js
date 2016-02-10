@@ -61,8 +61,7 @@ SecurityZone.prototype.init = function (config) {
     SecurityZone.super_.prototype.init.call(this, config);
     var self = this;
     
-    self.icon           = 'on';
-    
+    self.icon = 'on';
     self.vDev = this.controller.devices.create({
         deviceId: "SecurityZone_"+this.id,
         defaults: {
@@ -168,7 +167,7 @@ SecurityZone.prototype.attach = function (test) {
  * Detach events watchers from a device
  * @param {object} test - A test rule
  */
-SecurityZone.prototype.detach = function (test) {
+SecurityZone.prototype.detach = function(test) {
     var self        = this;
     self.controller.devices.off(test.device, "modify:metrics:level", self.callback);
     //self.controller.devices.off(test.device, "modify:metrics:change", self.callback);
@@ -340,7 +339,7 @@ SecurityZone.prototype.setState = function (newState,timer) {
         && state === 'off'
         && self.config.delayActivate > 0) {
         self.icon = 'delayActivate';
-        //self.checkActivate();
+        self.checkActivate('immediate');
         self.log('Delayed arming zone '+self.id);
         self.vDev.set('metrics:delayActivate',null);
         self.vDev.set('metrics:delayAlarm',null);
@@ -355,7 +354,10 @@ SecurityZone.prototype.setState = function (newState,timer) {
         self.vDev.set('metrics:level','on');
         self.vDev.set('metrics:delayActivate',null);
         self.vDev.set('metrics:delayAlarm',null);
-        self.checkActivate();
+        if (self.config.delayActivate === 0) {
+            self.checkActivate('immediate');
+        }
+        self.checkActivate('delayed');
         state = 'on';
     // Delayed alarm run 
     } else if (newState === 'alarm'
@@ -364,7 +366,7 @@ SecurityZone.prototype.setState = function (newState,timer) {
         self.log('Delayed alarm');
         self.icon = 'delayAlarm';
         state = 'delayAlarm';
-        message = self.getMessage('alarm_notification');
+        message = self.getMessage('alarm_notification',self.vDev.get('metrics:triggeredDevcies'));
         self.vDev.set('metrics:delayActivate',null);
         self.vDev.set('metrics:delayAlarm',null);
         self.callEvent('delayAlarm',message);
@@ -375,7 +377,7 @@ SecurityZone.prototype.setState = function (newState,timer) {
         self.log('Alarm');
         self.icon = 'alarm';
         state = 'alarm';
-        message = self.getMessage('alarm_notification');
+        message = self.getMessage('alarm_notification',self.vDev.get('metrics:triggeredDevcies'));
         self.vDev.set('metrics:delayActivate',null);
         self.vDev.set('metrics:delayAlarm',null);
         self.callEvent('alarm',message);
@@ -449,14 +451,14 @@ SecurityZone.prototype.setState = function (newState,timer) {
     self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/SecurityZone/icon_"+self.config.type+"_"+self.icon+".png");
 };
 
-SecurityZone.prototype.getMessage = function(langKey) {
+SecurityZone.prototype.getMessage = function(langKey,devices) {
     var self = this;
     
     var notification = self.langFile[langKey];
     notification = notification.replace('[TYPE]',self.langFile['type_'+self.config.type]);
     notification = notification.replace('[ZONE]',self.vDev.get('metrics:title'));
     notification = notification.replace('[STATE]',self.vDev.get('metrics:state'));
-    notification = notification.replace('[DEVICES]',self.vDev.get('metrics:triggeredDevcies').join(', '));
+    notification = notification.replace('[DEVICES]',devices.join(', '));
     
     return notification;
 };
@@ -478,13 +480,13 @@ SecurityZone.prototype.checkAlarm = function () {
     }
 };
 
-SecurityZone.prototype.checkActivate = function() {
+SecurityZone.prototype.checkActivate = function(mode) {
     var self = this;
     
     self.vDev.set('metrics:triggeredDevcies',[]);
-    var triggered = self.testsRules();
-    if (triggered) {
-        var message = self.getMessage('activate_triggered');
+    var devices = self.processRules(mode);
+    if (devices.length) {
+        var message = self.getMessage('activate_triggered',devices);
         self.callEvent('warning',message);
         self.controller.addNotification(
             "warning", 
@@ -495,15 +497,12 @@ SecurityZone.prototype.checkActivate = function() {
     }
 };
 
-SecurityZone.prototype.testsRules = function() {
-    var self = this;
-    
-    var triggered   = false;
-    var devices     = [];
-    var testCount   = 0;
+SecurityZone.prototype.processRules = function(check) {
+    var self    = this;
+    var devices = [];
     
     _.each(self.config.tests,function(test) {
-        var deviceId,testOperator,testValue;
+        var deviceId,testOperator,testValue,testCheck;
         var testTrigger     = false;
         var comapreKey      = 'level';
         
@@ -511,19 +510,30 @@ SecurityZone.prototype.testsRules = function() {
             deviceId        = test.testMultilevel.device;
             testOperator    = test.testMultilevel.testOperator;
             testValue       = test.testMultilevel.testValue;
+            testCheck       = test.testMultilevel.check;
         } else if (test.testType === "binary") {
             deviceId        = test.testBinary.device;
             testOperator    = '=';
             testValue       = test.testBinary.testValue;
+            testCheck       = test.testMultilevel.check;
         } else if (test.testType === "remote") {
             deviceId        = test.testRemote.device;
             testOperator    = '=';
             testValue       = test.testRemote.testValue;
+            testCheck       = 'never';
             if (_.contains(["upstart", "upstop", "downstart", "downstop"], test.testRemote.testValue)) {
                 comapreKey  = 'change';
             }
         } else {
             self.error('Inavlid test type');
+            return;
+        }
+        
+        testCheck = testCheck || 'delayed';
+        
+        // Skip checks that do not match phase
+        if (typeof(check) !== 'undefined'
+            && testCheck !== check) {
             return;
         }
         
@@ -551,13 +561,21 @@ SecurityZone.prototype.testsRules = function() {
         }
         devices.push(message);
         
-        testCount ++;
         self.log('Triggered test from '+deviceObject.get('metrics:title')+' ('+deviceId+')');
     });
     
+    return devices;
+};
+
+SecurityZone.prototype.testsRules = function() {
+    var self = this;
+    
+    var triggered   = false;
+    var devices     = self.processRules();
+    
     if (typeof(self.config.testThreshold) === 'number') {
-        if (testCount >= self.config.testThreshold)
-            triggered = true;
+        if (devices.length >= self.config.testThreshold)
+        triggered = true;
     } else if (testCount > 0) {
         triggered = true;
     }
