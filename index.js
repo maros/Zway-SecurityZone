@@ -279,7 +279,7 @@ SecurityZone.prototype.startDelayActivate = function () {
     self.stopDelayActivate();
     
     if (typeof(delayActivate) === 'number') {
-        self.log('Restart');
+        self.log('Restart delayed activation');
         if (dateNow >= delayActivate) {
             self.setState('on',true);
             self.vDev.set('metrics:delayActivate',null);
@@ -288,7 +288,7 @@ SecurityZone.prototype.startDelayActivate = function () {
             delayRelative = delayActivate - dateNow;
         }
     } else {
-        self.log('Set');
+        self.log('Set activation delay');
         delayActivate = dateNow + self.config.delayActivate;
         self.vDev.set('metrics:delayActivate',delayActivate);
     }
@@ -515,7 +515,7 @@ SecurityZone.prototype.processRules = function(check) {
             deviceId        = test.testBinary.device;
             testOperator    = '=';
             testValue       = test.testBinary.testValue;
-            testCheck       = test.testMultilevel.check;
+            testCheck       = test.testBinary.check;
         } else if (test.testType === "remote") {
             deviceId        = test.testRemote.device;
             testOperator    = '=';
