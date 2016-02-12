@@ -544,7 +544,7 @@ SecurityZone.prototype.processRules = function(check) {
         }
         
         var comapreValue    = deviceObject.get('metrics:'+comapreKey);
-        if (! self.op(comapreValue,testOperator,testValue)) {
+        if (! self.compare(comapreValue,testOperator,testValue)) {
             return;
         }
         
@@ -587,23 +587,7 @@ SecurityZone.prototype.testsRules = function() {
     return triggered;
 };
 
-SecurityZone.prototype.op = function (dval, op, val) {
-    if (op === "=") {
-        return dval === val;
-    } else if (op === "!=") {
-        return dval !== val;
-    } else if (op === ">") {
-        return dval > val;
-    } else if (op === "<") {
-        return dval < val;
-    } else if (op === ">=") {
-        return dval >= val;
-    } else if (op === "<=") {
-        return dval <= val;
-    }
-        
-    return null; // error!!  
-};
+
 
 
  
