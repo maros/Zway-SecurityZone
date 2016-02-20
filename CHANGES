@@ -1,3 +1,14 @@
+1.07 2016 Feb 20, Sat
+    * Move compare to BaseModule
+    * Fix activation checks
+    * Set when activation checks are performed
+    * Update docs
+    * Fix remote devices
+    * Add doc link. Threshold translations & documentation
+    * Optional test count threshold
+    * Custom alarm type
+    * Inverse multilevel checks
+
 1.06 2016 Jan 09, Sat
     * Call alarm check if the alarm condition is gone at the time of alarm event
     * Cancelable delayed alarms

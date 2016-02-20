@@ -17,17 +17,17 @@
    "maturity" : "stable",
    "moduleName" : "SecurityZone",
    "options" : {
-       "definitions" : {
-           "check" : {
-              "label" : "__label_check__",
-              "optionLabels" : [
-                    "__check_immediate__",
-                    "__check_delayed__",
-                    "__check_never__"
-               ],
-               "type" : "select"
-           }
-       },
+      "definitions" : {
+         "check" : {
+            "label" : "__label_check__",
+            "optionLabels" : [
+               "__check_immediate__",
+               "__check_delayed__",
+               "__check_never__"
+            ],
+            "type" : "select"
+         }
+      },
       "fields" : {
          "cancelable" : {
             "dependencies" : {
@@ -47,6 +47,18 @@
             "label" : "__delay_alarm_label__",
             "order" : 4
          },
+         "otherType" : {
+            "dependencies" : {
+               "type" : "other"
+            },
+            "label" : "__other_type_label__",
+            "order" : 2
+         },
+         "testThreshold" : {
+            "helper" : "__test_threshold_helper__",
+            "label" : "__test_threshold_label__",
+            "order" : 8
+         },
          "tests" : {
             "fields" : {
                "item" : {
@@ -56,13 +68,17 @@
                            "testType" : "binary"
                         },
                         "fields" : {
+                           "check" : {
+                              "$ref" : "#/definitions/check",
+                              "order" : 3
+                           },
                            "device" : {
                               "datasource" : "namespaces",
                               "field" : "optionLabels",
                               "label" : "",
                               "optionLabels" : "namespaces:devices_sensorBinary:deviceName,namespaces:devices_switchBinary:deviceName",
-                              "type" : "select",
-                              "order" : 1
+                              "order" : 1,
+                              "type" : "select"
                            },
                            "testValue" : {
                               "helper" : "__test_value_helper__",
@@ -71,10 +87,6 @@
                                  "__test_value_on__"
                               ],
                               "order" : 2
-                           },
-                           "check": {
-                               "$ref" : "#/definitions/check",
-                               "order": 3
                            }
                         },
                         "label" : "__test_binary_label__",
@@ -85,6 +97,10 @@
                            "testType" : "multilevel"
                         },
                         "fields" : {
+                           "check" : {
+                              "$ref" : "#/definitions/check",
+                              "order" : 4
+                           },
                            "device" : {
                               "datasource" : "namespaces",
                               "field" : "optionLabels",
@@ -108,10 +124,6 @@
                            "testValue" : {
                               "helper" : "__test_value_helper__",
                               "order" : 3
-                           },
-                           "check": {
-                               "$ref" : "#/definitions/check",
-                               "order": 4
                            }
                         },
                         "label" : "__test_multilevel_label__",
@@ -156,11 +168,6 @@
             "label" : "__tests_label__",
             "order" : 7
          },
-         "testThreshold" : {
-             "helper" : "__test_threshold_helper__",
-             "label" : "__test_threshold_label__",
-             "order" : 8
-          },
          "timeout" : {
             "helper" : "__timeout_helper__",
             "label" : "__timeout_label__",
@@ -181,13 +188,6 @@
                "__type_other__"
             ],
             "order" : 1
-         },
-         "otherType": {
-             "label" : "__other_type_label__",
-             "dependencies": {
-                 "type": "other"
-             },
-             "order" : 2
          }
       }
    },
@@ -196,18 +196,23 @@
       "type" : "git"
    },
    "schema" : {
-       "definitions" : {
-           "check" : {
-               "default" : "delayed",
-               "enum" : [
-                  "immediate",
-                  "delayed",
-                  "never"
-               ],
-               "required" : true,
-               "type" : "string"
-           }
-       },
+      "definitions" : {
+         "check" : {
+            "default" : "delayed",
+            "enum" : [
+               "immediate",
+               "delayed",
+               "never"
+            ],
+            "required" : true,
+            "type" : "string"
+         }
+      },
+      "dependencies" : {
+         "otherType" : [
+            "type"
+         ]
+      },
       "properties" : {
          "cancelable" : {
             "default" : false,
@@ -222,15 +227,21 @@
             "required" : true,
             "type" : "integer"
          },
+         "otherType" : {
+            "type" : "string"
+         },
          "testThreshold" : {
-             "type" : "integer"
-          },
+            "type" : "integer"
+         },
          "tests" : {
             "items" : {
                "properties" : {
                   "testBinary" : {
                      "dependencies" : "testType",
                      "properties" : {
+                        "check" : {
+                           "$ref" : "#/definitions/check"
+                        },
                         "device" : {
                            "datasource" : "namespaces",
                            "enum" : "namespaces:devices_sensorBinary:deviceId,namespaces:devices_switchBinary:deviceId",
@@ -245,9 +256,6 @@
                            ],
                            "required" : true,
                            "type" : "string"
-                        },
-                        "check": {
-                            "$ref" : "#/definitions/check"
                         }
                      },
                      "type" : "object"
@@ -255,6 +263,9 @@
                   "testMultilevel" : {
                      "dependencies" : "testType",
                      "properties" : {
+                        "check" : {
+                           "$ref" : "#/definitions/check"
+                        },
                         "device" : {
                            "datasource" : "namespaces",
                            "enum" : "namespaces:devices_sensorMultilevel:deviceId,namespaces:devices_switchMultilevel:deviceId,namespaces:devices_battery:deviceId",
@@ -276,9 +287,6 @@
                         "testValue" : {
                            "required" : true,
                            "type" : "number"
-                        },
-                        "check": {
-                            "$ref" : "#/definitions/check"
                         }
                      },
                      "type" : "object"
@@ -343,17 +351,11 @@
             ],
             "required" : true,
             "type" : "string"
-         },
-         "otherType" : {
-             "type" : "string"
          }
-      },
-      "dependencies": {
-          "otherType": ["type"]
       },
       "required" : true,
       "type" : "object"
    },
    "singleton" : false,
-   "version" : 1.06
+   "version" : 1.07
 }
