@@ -576,7 +576,7 @@ SecurityZone.prototype.testsRules = function() {
     if (typeof(self.config.testThreshold) === 'number') {
         if (devices.length >= self.config.testThreshold)
         triggered = true;
-    } else if (testCount > 0) {
+    } else if (devices.length > 0) {
         triggered = true;
     }
     
