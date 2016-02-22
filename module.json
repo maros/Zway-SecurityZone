@@ -7,7 +7,8 @@
       "delayAlarm" : 0,
       "description" : "__m_descr__",
       "timeout" : 0,
-      "title" : "__m_title__"
+      "title" : "__m_title__",
+      "testThreshold": 1
    },
    "dependencies" : [
       "BaseModule"
@@ -231,7 +232,8 @@
             "type" : "string"
          },
          "testThreshold" : {
-            "type" : "integer"
+            "type" : "integer",
+            "min": 1
          },
          "tests" : {
             "items" : {

@@ -485,7 +485,7 @@ SecurityZone.prototype.checkActivate = function(mode) {
     
     self.vDev.set('metrics:triggeredDevcies',[]);
     var devices = self.processRules(mode);
-    if (devices.length) {
+    if (devices.length > 0) {
         var message = self.getMessage('activate_triggered',devices);
         self.callEvent('warning',message);
         self.controller.addNotification(
@@ -574,8 +574,9 @@ SecurityZone.prototype.testsRules = function() {
     var devices     = self.processRules();
     
     if (typeof(self.config.testThreshold) === 'number') {
-        if (devices.length >= self.config.testThreshold)
-        triggered = true;
+        if (devices.length >= self.config.testThreshold) {
+            triggered = true;
+        }
     } else if (devices.length > 0) {
         triggered = true;
     }
