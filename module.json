@@ -7,8 +7,7 @@
       "delayAlarm" : 0,
       "description" : "__m_descr__",
       "timeout" : 0,
-      "title" : "__m_title__",
-      "testThreshold": 1
+      "title" : "__m_title__"
    },
    "dependencies" : [
       "BaseModule"
