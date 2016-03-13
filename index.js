@@ -70,7 +70,7 @@ SecurityZone.prototype.init = function (config) {
                 level: 'off',
                 state: 'off',
                 title: self.langFile.m_title+' '+self.langFile['type_'+self.config.type],
-                icon: "/ZAutomation/api/v1/load/modulemedia/SecurityZone/icon.png"
+                icon: self.imagePath+"/icon.png"
             }
         },
         overlay: {
@@ -448,7 +448,7 @@ SecurityZone.prototype.setState = function (newState,timer) {
     }
     
     self.vDev.set("metrics:state", state);
-    self.vDev.set("metrics:icon", "/ZAutomation/api/v1/load/modulemedia/SecurityZone/icon_"+self.config.type+"_"+self.icon+".png");
+    self.vDev.set("metrics:icon", self.imagePath+"/icon_"+self.config.type+"_"+self.icon+".png");
 };
 
 SecurityZone.prototype.getMessage = function(langKey,devices) {
