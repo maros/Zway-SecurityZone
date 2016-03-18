@@ -231,8 +231,8 @@
             "type" : "string"
          },
          "testThreshold" : {
-            "type" : "integer",
-            "min": 1
+            "min" : 1,
+            "type" : "integer"
          },
          "tests" : {
             "items" : {
@@ -358,5 +358,5 @@
       "type" : "object"
    },
    "singleton" : false,
-   "version" : 1.07
+   "version" : 1.08
 }

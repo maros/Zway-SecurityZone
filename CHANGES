@@ -1,3 +1,10 @@
+1.08 2016 Mar 18, Fri
+    * Translations
+    * Use imagePath from BaseModule
+    * Update installation howto
+    * Clenup threshold handling
+    * Fix error in alarm condition check
+
 1.07 2016 Feb 20, Sat
     * Move compare to BaseModule
     * Fix activation checks
