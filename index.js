@@ -327,61 +327,60 @@ SecurityZone.prototype.setState = function (newState,timer) {
         }
         self.stopDelayActivate();
         self.stopDelayAlarm();
-        self.icon = 'off';
+        self.updateState({ 
+            'state': 'off'
+            'triggeredDevcies': [],
+            'delayActivate': null,
+            'delayAlarm': null
+        })
         self.log('Disarm zone '+self.id);
-        self.vDev.set('metrics:delayActivate',null);
-        self.vDev.set('metrics:delayAlarm',null);
-        self.vDev.set('metrics:triggeredDevcies',[]);
-        self.vDev.set('metrics:level', 'off');
-        state = 'off';
     // Turn on delayed from handler
     } else if (newState === 'on'
         && state === 'off'
         && self.config.delayActivate > 0) {
-        self.icon = 'delayActivate';
-        self.checkActivate('immediate');
         self.log('Delayed arming zone '+self.id);
-        self.vDev.set('metrics:delayActivate',null);
-        self.vDev.set('metrics:delayAlarm',null);
-        state = 'delayActivate';
+        self.updateState({
+            'state': 'delayActivate',
+            'delayActivate': null,
+            'delayAlarm': null
+        });
+        self.checkActivate('immediate');
         self.startDelayActivate();
     // Turn on from handler
     } else if (newState === 'on'
         && (state === 'off' || (state === 'delayActivate' && timer === true))) {
-        self.icon = 'on';
-        // TODO check security zone and notify
         self.log('Arm zone '+self.id);
-        self.vDev.set('metrics:level','on');
-        self.vDev.set('metrics:delayActivate',null);
-        self.vDev.set('metrics:delayAlarm',null);
-        if (self.config.delayActivate === 0) {
-            self.checkActivate('immediate');
-        }
-        self.checkActivate('delayed');
-        state = 'on';
+        // TODO check security zone and notify
+        self.checkActivate();
+        self.updateState({
+            'state': 'on',
+            'delayActivate': null,
+            'delayAlarm': null
+        });
     // Delayed alarm run 
     } else if (newState === 'alarm'
         && state === 'on'
         && self.config.delayAlarm > 0) {
         self.log('Delayed alarm');
-        self.icon = 'delayAlarm';
-        state = 'delayAlarm';
         message = self.getMessage('alarm_notification',self.vDev.get('metrics:triggeredDevcies'));
-        self.vDev.set('metrics:delayActivate',null);
-        self.vDev.set('metrics:delayAlarm',null);
+        self.updateState({
+            'state': 'delayAlarm',
+            'delayActivate': null,
+            'delayAlarm': null
+        });
         self.callEvent('delayAlarm',message);
         self.startDelayAlarm();
     // Immediate alarm
     } else if (newState === 'alarm'
         && (state === 'on' || (state === 'delayAlarm' && timer === true))) {
         self.log('Alarm');
-        self.icon = 'alarm';
-        state = 'alarm';
+        self.updateState({
+            'delayActivate': null,
+            'delayAlarm': null
+            'state': 'alarm'
+        });
         message = self.getMessage('alarm_notification',self.vDev.get('metrics:triggeredDevcies'));
-        self.vDev.set('metrics:delayActivate',null);
-        self.vDev.set('metrics:delayAlarm',null);
         self.callEvent('alarm',message);
-        
         // Send Notification
         self.controller.addNotification(
             "warning", 
@@ -399,15 +398,13 @@ SecurityZone.prototype.setState = function (newState,timer) {
         && state === 'alarm'
         && self.config.timeout === 0) {
         self.log('Stop alarm');
-        self.icon = level;
-        state = level;
+        self.updateState({ 'state': level});
         self.callEvent('stop');
     // Start timeout
     } else if (newState === 'stop'
         && state === 'alarm') {
         self.log('Timeout alarm');
-        self.icon = 'alarm';
-        state = 'timeout';
+        self.updateState({ 'state': 'timeout', 'icon': 'alarm' });
         self.timeout = setTimeout(
             _.bind(
                 self.setState,
@@ -422,8 +419,7 @@ SecurityZone.prototype.setState = function (newState,timer) {
         && state === 'timeout' 
         && timer === true) {
         self.log('Stop alarm');
-        self.icon = level;
-        state = level;
+        self.updateState({ 'state': level });
         self.callEvent('stop');
         self.stopTimeout();
     // Stop cancelable delayed alarm
@@ -432,23 +428,40 @@ SecurityZone.prototype.setState = function (newState,timer) {
         && self.config.cancelable === true) {
         self.log('Cancel delayed alarm');
         self.stopDelayAlarm();
-        self.icon = level;
-        state = level;
+        self.updateState({ 'state': level });
         self.callEvent('delayCancel');
     // New alarm during timeout
     } else if (newState === 'alarm'
         && state === 'timeout') {
         self.log('Restart alarm');
         self.stopTimeout();
-        self.icon = 'alarm';
-        state = 'alarm';
+        self.updateState({ 'state': 'alarm' });
     // Nothing matches
     } else {
         return;
     }
+};
+
+SecurityZone.prototype.updateState = function(state) {
+    var self = this;
+    state.icon = state.icon || state.state;
     
-    self.vDev.set("metrics:state", state);
-    self.vDev.set("metrics:icon", self.imagePath+"/icon_"+self.config.type+"_"+self.icon+".png");
+    // Store as object attribute
+    self.icon = state.icon;
+    var iconPath = self.imagePath + "/icon_" + self.config.type + "_" + state.icon + ".png";
+    
+    if (state.state === 'on' || state.state === 'off') {
+        state.level = state.state;
+    }
+    
+    var set = {};
+    _.each(state, function(val, key) {
+        set['metrics:'+key] = val;
+    });
+    
+    console.logJS(set);
+    self.vDev.set(set);
+    return;
 };
 
 SecurityZone.prototype.getMessage = function(langKey,devices) {
