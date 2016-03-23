@@ -496,18 +496,38 @@ SecurityZone.prototype.checkAlarm = function () {
 SecurityZone.prototype.checkActivate = function(mode) {
     var self = this;
     
+    // Poll all devices
+    _.each(self.config.tests,function(test) {
+        var deviceId;
+        if (test.testType === "multilevel") {
+            deviceId = test.testMultilevel.device;
+        } else if (test.testType === "binary") {
+            deviceId = test.testBinary.device;
+        }
+        var deviceObject = self.controller.devices.get(deviceId);
+        if (deviceObject === null) {
+            self.error('Could not find device '+deviceId);
+            return;
+        }
+        deviceObject.performCommand('update');
+    });
+    
     self.vDev.set('metrics:triggeredDevcies',[]);
-    var devices = self.processRules(mode);
-    if (devices.length > 0) {
-        var message = self.getMessage('activate_triggered',devices);
-        self.callEvent('warning',message);
-        self.controller.addNotification(
-            "warning", 
-            message,
-            "module", 
-            "SecurityZone"
-        );
-    }
+    
+    // Delay 5 seconds
+    setTimeout(function() {
+        var devices = self.processRules(mode);
+        if (devices.length > 0) {
+            var message = self.getMessage('activate_triggered',devices);
+            self.callEvent('warning',message);
+            self.controller.addNotification(
+                "warning", 
+                message,
+                "module", 
+                "SecurityZone"
+            );
+        }
+    },5000);
 };
 
 SecurityZone.prototype.processRules = function(check) {
