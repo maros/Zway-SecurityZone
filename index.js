@@ -448,7 +448,7 @@ SecurityZone.prototype.setState = function(state) {
     
     // Store as object attribute
     self.icon = state.icon;
-    var iconPath = self.imagePath + "/icon_" + self.config.type + "_" + state.icon + ".png";
+    state.icon = self.imagePath + "/icon_" + self.config.type + "_" + state.icon + ".png";
     
     if (state.state === 'on' || state.state === 'off') {
         state.level = state.state;
