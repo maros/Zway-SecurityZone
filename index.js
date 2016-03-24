@@ -328,11 +328,11 @@ SecurityZone.prototype.changeState = function (newState,timer) {
         self.stopDelayActivate();
         self.stopDelayAlarm();
         self.setState({ 
-            'state': 'off'
+            'state': 'off',
             'triggeredDevcies': [],
             'delayActivate': null,
             'delayAlarm': null
-        })
+        });
         self.log('Disarm zone '+self.id);
     // Turn on delayed from handler
     } else if (newState === 'on'
@@ -344,8 +344,8 @@ SecurityZone.prototype.changeState = function (newState,timer) {
             'delayActivate': null,
             'delayAlarm': null
         });
-        self.checkActivate('immediate');
         self.startDelayActivate();
+        self.checkActivate('immediate');
     // Turn on from handler
     } else if (newState === 'on'
         && (state === 'off' || (state === 'delayActivate' && timer === true))) {
@@ -376,7 +376,7 @@ SecurityZone.prototype.changeState = function (newState,timer) {
         self.log('Alarm');
         self.setState({
             'delayActivate': null,
-            'delayAlarm': null
+            'delayAlarm': null,
             'state': 'alarm'
         });
         message = self.getMessage('alarm_notification',self.vDev.get('metrics:triggeredDevcies'));
@@ -454,13 +454,9 @@ SecurityZone.prototype.setState = function(state) {
         state.level = state.state;
     }
     
-    var set = {};
     _.each(state, function(val, key) {
-        set['metrics:'+key] = val;
+        self.vDev.set('metrics:'+key,val);
     });
-    
-    console.logJS(set);
-    self.vDev.set(set);
     return;
 };
 

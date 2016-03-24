@@ -216,7 +216,6 @@
       "properties" : {
          "cancelable" : {
             "default" : false,
-            "required" : true,
             "type" : "boolean"
          },
          "delayActivate" : {
