@@ -465,7 +465,8 @@ SecurityZone.prototype.getMessage = function(langKey,devices) {
     var self = this;
     
     var notification = self.langFile[langKey];
-    notification = notification.replace('[TYPE]',self.langFile['type_'+self.config.type]);
+    var type = self.config.type === 'other' ? self.config.otherType : self.langFile['type_'+self.config.type];
+    notification = notification.replace('[TYPE]',type);
     notification = notification.replace('[ZONE]',self.vDev.get('metrics:title'));
     notification = notification.replace('[STATE]',self.vDev.get('metrics:state'));
     notification = notification.replace('[DEVICES]',devices.join(', '));
