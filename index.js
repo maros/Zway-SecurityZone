@@ -180,9 +180,9 @@ SecurityZone.prototype.detach = function(test) {
 SecurityZone.prototype.callEvent = function(event,message) {
     var self        = this;
     var type        = self.config.type;
-    if (type === 'other')
+    if (type === 'other') {
         type        = self.config.otherType || type;
-    
+    }
     var fullEvent = "security."+type+'.'+event;
     var params = {
         id:         self.id,
@@ -351,7 +351,8 @@ SecurityZone.prototype.changeState = function (newState,timer) {
         && (state === 'off' || (state === 'delayActivate' && timer === true))) {
         self.log('Arm zone '+self.id);
         // TODO check security zone and notify
-        self.checkActivate();
+        self.checkActivate('immediate');
+        self.checkActivate('delayed');
         self.setState({
             'state': 'on',
             'delayActivate': null,
