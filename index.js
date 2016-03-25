@@ -92,7 +92,7 @@ SecurityZone.prototype.init = function (config) {
     
     //self.changeState(this.vDev.get('metrics:level'));
     
-    self.callback  = _.bind(self.checkAlarm,self);
+    self.callback = _.bind(self.checkAlarm,self);
     
     var state = this.vDev.get('metrics:state');
     if (state === 'delayActivate') {
@@ -496,6 +496,9 @@ SecurityZone.prototype.checkActivate = function(mode) {
     // Poll all devices
     _.each(self.config.tests,function(test) {
         var deviceId;
+        if (test.check !== mode) {
+            return;
+        }
         if (test.testType === "multilevel") {
             deviceId = test.testMultilevel.device;
         } else if (test.testType === "binary") {
@@ -603,7 +606,8 @@ SecurityZone.prototype.testsRules = function() {
     var triggered   = false;
     var devices     = self.processRules();
     
-    if (typeof(self.config.testThreshold) === 'number') {
+    if (typeof(self.config.testThreshold) === 'number'
+        && self.config.testThreshold > 0) {
         if (devices.length >= self.config.testThreshold) {
             triggered = true;
         }
