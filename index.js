@@ -77,7 +77,7 @@ SecurityZone.prototype.init = function (config) {
             metrics: {
                 securityType: self.config.type
             },
-            probeType: 'SecurityZone',
+            probeType: 'security_zone',
             deviceType: 'switchBinary'
         },
         handler: function(command, args) {
