@@ -178,12 +178,8 @@ SecurityZone.prototype.detach = function(test) {
  * @param {string} event - Event type
  */
 SecurityZone.prototype.callEvent = function(event,message) {
-    var self        = this;
-    var type        = self.config.type;
-    if (type === 'other') {
-        type        = self.config.otherType || type;
-    }
-    var fullEvent = "security."+type+'.'+event;
+    var self = this;
+    var fullEvent = self.eventName(event);
     var params = {
         id:         self.id,
         title:      self.vDev.get('metrics:title'),
@@ -198,6 +194,15 @@ SecurityZone.prototype.callEvent = function(event,message) {
     self.log('Emit '+fullEvent);
     self.controller.emit(fullEvent,params);
 };
+
+SecurityZone.prototype.eventName = function(event) {
+    var self        = this;
+    var type        = self.config.type;
+    if (type === 'other') {
+        type        = self.config.otherType || type;
+    }
+    return "security."+type+'.'+event;
+}
 
 /**
  * Stops alarm timeout if any
