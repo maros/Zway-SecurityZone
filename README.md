@@ -22,17 +22,26 @@ can be used to act upon alarms.
 
 Specifies an optional delay between detection of the alarm and issuing of the 
 alarm event. Turning off the security zone within the delay period prevents 
-the alarm event from being emitted. Delay is specified in seconds.
+the alarm event from being emitted, allowing for safe disarming of the alarm. 
+Delay is specified in seconds.
 
 ## cancelable
 
-This option controls if delayed alarms continue after the alarm condition
-has gone away, or if they should continue (default).
+If this option is enabled, delayed alarms will be canceled if the alarm 
+sensors are untriggered during the alarm delay period. Otherwise, if this 
+option is not enabled, an alarm will be triggered, no matter if the alarm 
+condition is still present or not. 
+
+Use this option for setups where you want to raise an alarm if a condition 
+continues for a given period of time.
 
 ## delayActivate
 
 Specifies an optional delay between arming an alarm zone and activating
 the security sensors. Delay is specified in seconds.
+
+This option can be used to allow for leaving the house without tripping
+alarms.
 
 ## timeout
 
@@ -130,13 +139,13 @@ as parameters
 
 ## security.$TYPE.stop
 
-Called whenever an alarm ends or is stopped.
+Called whenever an alarm ends or is stopped by disabling the zone.
 
 ## security.$TYPE.delayAlarm
 
-Called whenever a delayed alarm is triggered. When the security zone virtual
-device is turned off before the delay finishes, a security.cancel event
-will be emitted, otherwise a security.alarm event will follow.
+Called whenever a delayed alarm is triggered. When the security zone is 
+disabled before the delay finishes, a security.$TYPE.cancel event
+will be emitted, otherwise a security.$TYPE.alarm event will follow.
 
 ## security.$TYPE.delayCancel
 
