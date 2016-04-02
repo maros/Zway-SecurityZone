@@ -1,7 +1,7 @@
 {
    "activate_triggered" : "Attention! Zone [ZONE] is already triggered while trying to activate: [DEVICES]",
    "alarm_notification" : "Alarm! [TYPE] was detected in zone [ZONE]: [DEVICES]",
-   "cancelable_helper" : "If this option is enabled, delayed alarms will be canceled if the alarm sensors are untriggered during the alarm delay period. Otherwise, if this option is not enabled, an alarm will be triggered, no matter if the alarm condition is still present or not. Use this option for setups where you want to raise an alarm if a condition continues for a given amout of time.",
+   "cancelable_helper" : "If this option is enabled, delayed alarms will be canceled if the alarm sensors are untriggered during the alarm delay period. Otherwise, if this option is not enabled, an alarm will be triggered, no matter if the alarm condition is still present or not. Use this option for setups where you want to raise an alarm if a condition continues for a given period of time.",
    "cancelable_label" : "Cancelable delayed alarm",
    "check_delayed" : "Delayed check",
    "check_immediate" : "Immediate check",
@@ -14,6 +14,8 @@
    "m_descr" : "Group multiple devices in security zones. This module can be used to set multiple alarm conditions based on binary and multilevel sensors. Furthermore various thresholds, timeouts and delays can be set to customize the zone.<br>Check <a href=https://github.com/maros/Zway-SecurityZone/blob/master/README.md>github.com/maros/Zway-SecurityZone</a> for detailed documentation.",
    "m_title" : "Security Zones",
    "other_type_label" : "Custom event type",
+   "single_zone_helper" : "Does not go into alarm mode if another alarm zone of the same type is already in alarm mode",
+   "single_zone_label" : "Only one alarm zone",
    "test_binary_label" : "Binary condition",
    "test_multilevel_label" : "Multilevel condition",
    "test_remote_label" : "Remote condition",

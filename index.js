@@ -373,6 +373,25 @@ SecurityZone.prototype.changeState = function (newState,timer) {
     } else if (newState === 'alarm'
         && (state === 'on' || (state === 'delayAlarm' && timer === true))) {
         self.log('Alarm');
+        
+        if (self.config.singleZone) {
+            var ignore = false;
+            self.processDevices([
+                ['probeType','=','security_zone'],
+                ['securityType','=',self.type],
+                ['id','!=',vDev.id],
+            ],function(vDev) {
+                var state = vDev.get('metrics:state');
+                if (state === 'alarm' || state === 'timeout' || state === 'delayAlarm') {
+                    ignore = true;
+                }
+            });
+            if (ignore) {
+                self.log('Other security zone '+vDev.id+' is already active. Ignoring alarm');
+                return;
+            }
+        }
+        
         self.setState({
             'delayActivate': null,
             'delayAlarm': null,
@@ -380,6 +399,7 @@ SecurityZone.prototype.changeState = function (newState,timer) {
         });
         message = self.getMessage('alarm_notification',self.vDev.get('metrics:triggeredDevcies'));
         self.callEvent('alarm',message);
+        
         // Send Notification
         self.controller.addNotification(
             "warning", 

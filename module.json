@@ -3,6 +3,7 @@
    "category" : "complex_applications",
    "defaults" : {
       "cancelable" : false,
+      "singleZone": false,
       "delayActivate" : 0,
       "delayAlarm" : 0,
       "description" : "__m_descr__",
@@ -54,10 +55,15 @@
             "label" : "__other_type_label__",
             "order" : 2
          },
+         "singleZone": {
+            "helper" : "__single_zone_helper__",
+            "label" : "__single_zone_label__",
+            "order" : 7
+         },
          "testThreshold" : {
             "helper" : "__test_threshold_helper__",
             "label" : "__test_threshold_label__",
-            "order" : 8
+            "order" : 11
          },
          "tests" : {
             "fields" : {
@@ -166,7 +172,7 @@
             },
             "helper" : "__tests_helper__",
             "label" : "__tests_label__",
-            "order" : 7
+            "order" : 10
          },
          "timeout" : {
             "helper" : "__timeout_helper__",
@@ -335,6 +341,9 @@
          "timeout" : {
             "required" : true,
             "type" : "integer"
+         },
+         "singleZone" : {
+            "type" : "boolean"
          },
          "type" : {
             "default" : "open",

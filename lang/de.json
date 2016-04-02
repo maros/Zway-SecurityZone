@@ -14,6 +14,8 @@
    "m_descr" : "Gruppiert mehrer Sensoren in eine Sicherheits Zone. Dieses Modul kann mehrer Alarm Bedingungen anhand von analogen oder binären Sensoren festlegen. Außerdem können Nachlauf, Verzögerung und Schwellenwerte eingestellt werden um die Zone anzupassen.<br>Siehe <a href=https://github.com/maros/Zway-SecurityZone/blob/master/README.md>github.com/maros/Zway-SecurityZone</a> für detailliertere Dokumentation.",
    "m_title" : "Sicherheits Zone",
    "other_type_label" : "Eigne Alarm Art",
+   "single_zone_helper" : "Alarm wird nicht ausgelöst wenn eine Alarm Zone vom selben Typ bereits ausgelöst ist",
+   "single_zone_label" : "Nur eine Alarm Zone",
    "test_binary_label" : "Binäre Bedingungen",
    "test_multilevel_label" : "Analoge Bedingungen",
    "test_remote_label" : "Fernbedienungs Bedingungen",

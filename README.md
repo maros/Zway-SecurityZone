@@ -39,6 +39,14 @@ the security sensors. Delay is specified in seconds.
 Specifies a timeout for the alarm state after the last sensor was untripped.
 Timeout is specified in seconds.
 
+## singleZone
+
+If this option is enabled, only one security zone of same type may be in the
+state alarm, timeout or delayed alarm. 
+
+Enable this option if you have multiple security zones with different
+delay alarm settings.
+
 ## type
 
 Specifies the type of alarm (intrusion, flood, ... or other)
