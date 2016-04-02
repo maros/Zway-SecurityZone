@@ -346,7 +346,7 @@ SecurityZone.prototype.changeState = function (newState,timer) {
         });
         self.startDelayActivate();
         self.checkActivate('immediate');
-    // Turn on from handler
+    // Turn on from handler (either immediate or after delay)
     } else if (newState === 'on'
         && (state === 'off' || (state === 'delayActivate' && timer === true))) {
         self.log('Arm zone '+self.id);
@@ -358,7 +358,7 @@ SecurityZone.prototype.changeState = function (newState,timer) {
             'delayActivate': null,
             'delayAlarm': null
         });
-    // Delayed alarm run 
+    // Delayed alarm run
     } else if (newState === 'alarm'
         && state === 'on'
         && self.config.delayAlarm > 0) {
@@ -371,7 +371,7 @@ SecurityZone.prototype.changeState = function (newState,timer) {
         });
         self.callEvent('delayAlarm',message);
         self.startDelayAlarm();
-    // Immediate alarm
+    // Alarm (either immediate or after delay)
     } else if (newState === 'alarm'
         && (state === 'on' || (state === 'delayAlarm' && timer === true))) {
         self.log('Alarm');
@@ -394,16 +394,20 @@ SecurityZone.prototype.changeState = function (newState,timer) {
         if (triggered === false) {
             setTimeout(self.callback,1000*5);
         }
-    // Stop alarm, no timeout
+    // Stop alarm (either immediate or after timeout)
     } else if (newState === 'stop' 
-        && state === 'alarm'
-        && self.config.timeout === 0) {
+        && (
+            (state === 'alarm' && self.config.timeout === 0) 
+            || (state === 'timeout' || timer === true)
+        )) {
         self.log('Stop alarm');
+        self.stopTimeout();
         self.setState({ 'state': level});
         self.callEvent('stop');
-    // Start timeout
+    // Stop alarm timeout
     } else if (newState === 'stop'
-        && state === 'alarm') {
+        && state === 'alarm'
+        && self.config.timeout > 0) {
         self.log('Timeout alarm');
         self.setState({ 'state': 'timeout', 'icon': 'alarm' });
         self.timeout = setTimeout(
@@ -415,14 +419,6 @@ SecurityZone.prototype.changeState = function (newState,timer) {
             ),
             (self.config.timeout * 1000)
         );
-    // Stop alarm after timeout
-    } else if (newState === 'stop'
-        && state === 'timeout' 
-        && timer === true) {
-        self.log('Stop alarm');
-        self.setState({ 'state': level });
-        self.callEvent('stop');
-        self.stopTimeout();
     // Stop cancelable delayed alarm
     } else if (newState === 'stop'
         && state === 'delayAlarm'
