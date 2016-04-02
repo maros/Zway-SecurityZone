@@ -396,7 +396,7 @@ SecurityZone.prototype.changeState = function (newState,timer) {
     } else if (newState === 'stop' 
         && (
             (state === 'alarm' && self.config.timeout === 0) 
-            || (state === 'timeout' || timer === true)
+            || (state === 'timeout' && timer === true)
         )) {
         self.log('Stop alarm');
         self.stopTimeout();
