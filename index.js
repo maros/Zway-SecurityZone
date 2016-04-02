@@ -378,16 +378,18 @@ SecurityZone.prototype.changeState = function (newState,timer) {
             var ignore = false;
             self.processDevices([
                 ['probeType','=','security_zone'],
-                ['securityType','=',self.type],
-                ['id','!=',vDev.id],
+                ['metrics:securityType','=',self.type],
+                ['id','!=',self.vDev.id],
             ],function(vDev) {
+                
                 var state = vDev.get('metrics:state');
+                self.log('Check other zone'+state);
                 if (state === 'alarm' || state === 'timeout' || state === 'delayAlarm') {
+                    self.log('Other security zone '+vDev.id+' is already active. Ignoring alarm');
                     ignore = true;
                 }
             });
             if (ignore) {
-                self.log('Other security zone '+vDev.id+' is already active. Ignoring alarm');
                 return;
             }
         }
