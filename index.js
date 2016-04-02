@@ -20,6 +20,7 @@ function SecurityZone (id, controller) {
     this.callback               = undefined;
     this.icon                   = undefined;
     this.langFile               = undefined;
+    this.type                   = undefined;
 }
 
 inherits(SecurityZone, BaseModule);
@@ -61,6 +62,7 @@ SecurityZone.prototype.init = function (config) {
     SecurityZone.super_.prototype.init.call(this, config);
     var self = this;
     
+    self.type = (self.config.type == 'other') ? self.config.otherType: self.config.type;
     self.icon = 'on';
     self.vDev = this.controller.devices.create({
         deviceId: "SecurityZone_"+this.id,
@@ -75,7 +77,7 @@ SecurityZone.prototype.init = function (config) {
         },
         overlay: {
             metrics: {
-                securityType: self.config.type
+                securityType: self.type
             },
             probeType: 'security_zone',
             deviceType: 'switchBinary'
@@ -179,13 +181,13 @@ SecurityZone.prototype.detach = function(test) {
  */
 SecurityZone.prototype.callEvent = function(event,message) {
     var self = this;
-    var fullEvent = self.eventName(event);
+    var fullEvent = 'security.'+self.type+'.'+event;
     var params = {
         id:         self.id,
         title:      self.vDev.get('metrics:title'),
         location:   self.vDev.get('metrics:location'),
         //cancelable: self.config.cancelable,
-        type:       type,
+        type:       self.type,
         delay:      self.config.delayAlarm,
         event:      event,
         message:    message
@@ -194,15 +196,6 @@ SecurityZone.prototype.callEvent = function(event,message) {
     self.log('Emit '+fullEvent);
     self.controller.emit(fullEvent,params);
 };
-
-SecurityZone.prototype.eventName = function(event) {
-    var self        = this;
-    var type        = self.config.type;
-    if (type === 'other') {
-        type        = self.config.otherType || type;
-    }
-    return "security."+type+'.'+event;
-}
 
 /**
  * Stops alarm timeout if any
