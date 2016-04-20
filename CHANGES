@@ -1,3 +1,20 @@
+1.09 2016 Apr 21, Thu
+    * Improve documentation
+    * Add singleZoneOption
+    * Pre calculate zone type
+    * Improved helper texts
+    * Refactor event name logic
+    * Simplify state change logic
+    * Cleannup probeType
+    * Use correct type
+    * Fix threshold checks, do not poll devices twice
+    * Fix alarm check types
+    * Set correct icons
+    * Fix race condition
+    * Rename methods
+    * check activate now polls all devices
+    * Refactor state changes
+
 1.08 2016 Mar 18, Fri
     * Translations
     * Use imagePath from BaseModule

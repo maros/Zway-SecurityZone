@@ -3,10 +3,10 @@
    "category" : "complex_applications",
    "defaults" : {
       "cancelable" : false,
-      "singleZone": false,
       "delayActivate" : 0,
       "delayAlarm" : 0,
       "description" : "__m_descr__",
+      "singleZone" : false,
       "timeout" : 0,
       "title" : "__m_title__"
    },
@@ -55,7 +55,7 @@
             "label" : "__other_type_label__",
             "order" : 2
          },
-         "singleZone": {
+         "singleZone" : {
             "helper" : "__single_zone_helper__",
             "label" : "__single_zone_label__",
             "order" : 7
@@ -235,6 +235,9 @@
          "otherType" : {
             "type" : "string"
          },
+         "singleZone" : {
+            "type" : "boolean"
+         },
          "testThreshold" : {
             "min" : 1,
             "type" : "integer"
@@ -342,9 +345,6 @@
             "required" : true,
             "type" : "integer"
          },
-         "singleZone" : {
-            "type" : "boolean"
-         },
          "type" : {
             "default" : "open",
             "enum" : [
@@ -366,5 +366,5 @@
       "type" : "object"
    },
    "singleton" : false,
-   "version" : 1.08
+   "version" : 1.09
 }
