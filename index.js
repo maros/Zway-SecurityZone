@@ -79,7 +79,7 @@ SecurityZone.prototype.init = function (config) {
             metrics: {
                 securityType: self.type
             },
-            probeType: 'security_zone',
+            probeType: 'controller_security',
             deviceType: 'switchBinary'
         },
         handler: function(command, args) {
@@ -377,7 +377,7 @@ SecurityZone.prototype.changeState = function (newState,timer) {
         if (self.config.singleZone) {
             var ignore = false;
             self.processDevices([
-                ['probeType','=','security_zone'],
+                ['probeType','=','controller_security'],
                 ['metrics:securityType','=',self.type],
                 ['id','!=',self.vDev.id],
             ],function(vDev) {
