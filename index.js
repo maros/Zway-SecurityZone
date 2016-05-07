@@ -343,14 +343,13 @@ SecurityZone.prototype.changeState = function (newState,timer) {
             'delayAlarm': null
         });
         self.startDelayActivate();
-        self.checkActivate('immediate');
+        self.checkActivate(['immediate']);
     // Turn on from handler (either immediate or after delay)
     } else if (newState === 'on'
         && (state === 'off' || (state === 'delayActivate' && timer === true))) {
         self.log('Arm zone '+self.id);
         // TODO check security zone and notify
-        self.checkActivate('immediate');
-        self.checkActivate('delayed');
+        self.checkActivate(['immediate','delayed']);
         self.setState({
             'state': 'on',
             'delayActivate': null,
@@ -507,15 +506,12 @@ SecurityZone.prototype.checkAlarm = function () {
     }
 };
 
-SecurityZone.prototype.checkActivate = function(mode) {
+SecurityZone.prototype.checkActivate = function(checks) {
     var self = this;
     
     // Poll all devices
     _.each(self.config.tests,function(test) {
         var deviceId;
-        if (test.check !== mode) {
-            return;
-        }
         if (test.testType === "multilevel") {
             deviceId = test.testMultilevel.device;
         } else if (test.testType === "binary") {
@@ -527,13 +523,15 @@ SecurityZone.prototype.checkActivate = function(mode) {
             return;
         }
         deviceObject.performCommand('update');
+        if (_.indexOf(checks,test.check) !== -1) {
+            return;
+        }
     });
     
     self.vDev.set('metrics:triggeredDevcies',[]);
     
-    // Delay 5 seconds
     setTimeout(function() {
-        var devices = self.processRules(mode);
+        var devices = self.processRules(checks);
         if (devices.length > 0) {
             var message = self.getMessage('activate_triggered',devices);
             self.callEvent('warning',message);
@@ -544,10 +542,10 @@ SecurityZone.prototype.checkActivate = function(mode) {
                 "SecurityZone"
             );
         }
-    },5000);
+    },30 * 1000); // Delay 30 seconds
 };
 
-SecurityZone.prototype.processRules = function(check) {
+SecurityZone.prototype.processRules = function(checks) {
     var self    = this;
     var devices = [];
     
@@ -582,8 +580,8 @@ SecurityZone.prototype.processRules = function(check) {
         testCheck = testCheck || 'delayed';
         
         // Skip checks that do not match phase
-        if (typeof(check) !== 'undefined'
-            && testCheck !== check) {
+        if (_.isArray(checks)
+            && _.indexOf(checks,testCheck) === -1) {
             return;
         }
         
