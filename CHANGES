@@ -1,3 +1,9 @@
+1.10 2016 Jun 01, Wed
+    * Improve texts
+    * Set defaults
+    * Improved activation checks
+    * Update probeType
+
 1.09 2016 Apr 21, Thu
     * Improve documentation
     * Add singleZoneOption

@@ -7,9 +7,9 @@
       "delayAlarm" : 0,
       "description" : "__m_descr__",
       "singleZone" : false,
+      "tests" : [],
       "timeout" : 0,
-      "title" : "__m_title__",
-      "tests": []
+      "title" : "__m_title__"
    },
    "dependencies" : [
       "BaseModule"
@@ -367,5 +367,5 @@
       "type" : "object"
    },
    "singleton" : false,
-   "version" : 1.09
+   "version" : "1.10"
 }
