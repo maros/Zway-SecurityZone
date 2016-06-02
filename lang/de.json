@@ -23,7 +23,7 @@
    "test_threshold_label" : "Alarm Bedingungs Schwellenwert",
    "test_type_helper" : "Art des Geräts dass einen Alarm auslösen kann",
    "test_type_label" : "Art der Bedingung",
-   "test_value_helper" : "Löst einen Alarm aus wenn die Wetre übereinstimmen",
+   "test_value_helper" : "Löst einen Alarm aus wenn die Werte übereinstimmen",
    "test_value_off" : "Aus",
    "test_value_on" : "An",
    "tests_helper" : "Geräte die einen Alarm auslösen können",
