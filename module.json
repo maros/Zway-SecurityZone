@@ -21,7 +21,8 @@
    "options" : {
       "definitions" : {
          "check" : {
-            "label" : "__label_check__",
+            "label" : "__check_label__",
+            "label" : "__check_helper__",
             "optionLabels" : [
                "__check_immediate__",
                "__check_delayed__",
