@@ -1,6 +1,6 @@
 {
    "author" : "Maroš Kollár",
-   "category" : "complex_applications",
+   "category" : "security",
    "defaults" : {
       "cancelable" : false,
       "delayActivate" : 0,
