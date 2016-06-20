@@ -12,7 +12,7 @@
    "delay_alarm_label" : "Alarm delay",
    "check_label" : "Activation check time",
    "check_helper" : "MISSING",
-   "m_descr" : "Group multiple devices in security zones to manage intrusion, fire, leakage, ... and other types of alarm. This module can be used to set multiple alarm conditions based on binary and multilevel sensors. Furthermore various thresholds, timeouts and delays can be set to customize the alarm zone for ones individual needs.<br>Check <a href=https://github.com/maros/Zway-SecurityZone/blob/master/README.md>github.com/maros/Zway-SecurityZone</a> for detailed documentation.",
+   "m_descr" : "Group multiple devices in security zones to manage intrusion, fire, leakage, ... and other types of alarms. This module can be used to set multiple alarm conditions based on binary and multilevel sensors. Furthermore various thresholds, timeouts and delays can be set to customise the alarm zone for ones individual needs. In case of an alarm this module emits an event that can be processed using other modules such as EventWatcher. <br>Check <a href=https://github.com/maros/Zway-SecurityZone/blob/master/README.md>github.com/maros/Zway-SecurityZone</a> for detailed documentation.",
    "m_title" : "Security Zones",
    "other_type_label" : "Custom event type",
    "single_zone_helper" : "Does not go into alarm mode if another alarm zone of the same type is already in alarm mode",
