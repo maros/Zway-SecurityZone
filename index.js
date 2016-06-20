@@ -186,6 +186,7 @@ SecurityZone.prototype.callEvent = function(event,message) {
         id:         self.id,
         title:      self.vDev.get('metrics:title'),
         location:   self.vDev.get('metrics:location'),
+        devices:    self.vDev.get('metrics:triggeredDevcies'),
         //cancelable: self.config.cancelable,
         type:       self.type,
         delay:      self.config.delayAlarm,
