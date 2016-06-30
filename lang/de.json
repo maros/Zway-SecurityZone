@@ -11,7 +11,7 @@
    "delay_alarm_helper" : "Verzögert den Alarm (in Sekunden) in einer Zone nachdem Sensor angeschlagen haben. Diese Verzögerung gibt Bewohnern Zeit die Alarmanlage nach dem Betreten des Hauses zu deaktivieren.",
    "delay_alarm_label" : "Alarm Verzögerung",
    "check_label" : "Zeitpunkt der Prüfung bei Aktivierung",
-   "check_helper" : "MISSING",
+   "check_helper" : "Setzt den Zeitpunkt wann geprüft werden soll ob das Gerät bei der Aktivierung der Zone bereits ausgelöst ist. Sofortige Prüfung: Prüft unmittelbar nach der Aktivierung der Zone, Verzögerte Prüfung: Prüft nach der eingestellten Verzögerung, Keine Prüfung bei Aktivierung",
    "m_descr" : "Gruppiert mehrer Sensoren in eine Sicherheits Zone. Dieses Modul kann mehrer Alarm Bedingungen anhand von analogen oder binären Sensoren festlegen. Außerdem können Nachlauf, Verzögerung und Schwellenwerte eingestellt werden um die Zone anzupassen.<br>Siehe <a href=https://github.com/maros/Zway-SecurityZone/blob/master/README.md>github.com/maros/Zway-SecurityZone</a> für detailliertere Dokumentation.",
    "m_title" : "Sicherheits Zone",
    "other_type_label" : "Eigne Alarm Art",
