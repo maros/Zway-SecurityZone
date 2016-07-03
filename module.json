@@ -2,6 +2,7 @@
    "author" : "Maroš Kollár",
    "category" : "security",
    "defaults" : {
+      "alarmDevice": false,
       "cancelable" : false,
       "delayActivate" : 0,
       "delayAlarm" : 0,
@@ -9,7 +10,8 @@
       "singleZone" : false,
       "tests" : [],
       "timeout" : 0,
-      "title" : "__m_title__"
+      "title" : "__m_title__",
+      "type": "intrusion"
    },
    "dependencies" : [
       "BaseModule"
@@ -223,7 +225,6 @@
       },
       "properties" : {
          "cancelable" : {
-            "default" : false,
             "type" : "boolean"
          },
          "delayActivate" : {
@@ -246,8 +247,14 @@
          },
          "tests" : {
             "items" : {
+               "defaults": {
+                    "testType" : "binary"
+               },
                "properties" : {
                   "testBinary" : {
+                     "defaults": {
+                        "testValue": "on"
+                     },
                      "dependencies" : "testType",
                      "properties" : {
                         "check" : {
@@ -260,7 +267,6 @@
                            "required" : true
                         },
                         "testValue" : {
-                           "default" : "on",
                            "enum" : [
                               "off",
                               "on"
@@ -303,6 +309,9 @@
                      "type" : "object"
                   },
                   "testRemote" : {
+                     "defaults": {
+                        "testValue": "on"
+                     },
                      "dependencies" : "testType",
                      "properties" : {
                         "device" : {
@@ -312,7 +321,6 @@
                            "required" : true
                         },
                         "testValue" : {
-                           "default" : "on",
                            "enum" : [
                               "off",
                               "on",
@@ -328,7 +336,6 @@
                      "type" : "object"
                   },
                   "testType" : {
-                     "default" : "binary",
                      "enum" : [
                         "binary",
                         "multilevel",
@@ -348,7 +355,6 @@
             "type" : "integer"
          },
          "type" : {
-            "default" : "open",
             "enum" : [
                "intrusion",
                "flood",

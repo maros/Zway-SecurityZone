@@ -637,8 +637,3 @@ SecurityZone.prototype.testsRules = function() {
     
     return triggered;
 };
-
-
-
-
- 
