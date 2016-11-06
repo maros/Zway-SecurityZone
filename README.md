@@ -20,19 +20,19 @@ can be used to act upon alarms.
 
 ## delayAlarm
 
-Specifies an optional delay between detection of the alarm and issuing of the 
-alarm event. Turning off the security zone within the delay period prevents 
-the alarm event from being emitted, allowing for safe disarming of the alarm. 
+Specifies an optional delay between detection of the alarm and issuing of the
+alarm event. Turning off the security zone within the delay period prevents
+the alarm event from being emitted, allowing for safe disarming of the alarm.
 Delay is specified in seconds.
 
 ## cancelable
 
-If this option is enabled, delayed alarms will be canceled if the alarm 
-sensors are untriggered during the alarm delay period. Otherwise, if this 
-option is not enabled, an alarm will be triggered, no matter if the alarm 
-condition is still present or not. 
+If this option is enabled, delayed alarms will be canceled if the alarm
+sensors are untriggered during the alarm delay period. Otherwise, if this
+option is not enabled, an alarm will be triggered, no matter if the alarm
+condition is still present or not.
 
-Use this option for setups where you want to raise an alarm if a condition 
+Use this option for setups where you want to raise an alarm if a condition
 continues for a given period of time.
 
 ## delayActivate
@@ -51,7 +51,7 @@ Timeout is specified in seconds.
 ## singleZone
 
 If this option is enabled, only one security zone of same type may be in the
-state alarm, timeout or delayed alarm. 
+state alarm, timeout or delayed alarm.
 
 Enable this option if you have multiple security zones with different
 delay alarm settings.
@@ -79,14 +79,14 @@ Tests for each device type
 
 ## tests.testBinary.check, tests.testMultilevel.check
 
-When a security zone is activated checks will be performed if the alarm 
+When a security zone is activated checks will be performed if the alarm
 condition is already met. This option specifies the time when these checks
 should be performed: Either immediately, delayed or never.
 
 ## tests.testBinary.device, tests.testMultilevel.device, tests.testRemote.device
 
-Pick the devices that shall trip the alarm. These are usually door/window 
-sensors, window handles, glass breaking sensors for intrusion alarms, 
+Pick the devices that shall trip the alarm. These are usually door/window
+sensors, window handles, glass breaking sensors for intrusion alarms,
 smoke sensors for smoke alarms, ... but can also be switches or temperature
 sensors for low/high temperature alarms.
 
@@ -100,8 +100,8 @@ Value for the device test. If the criteria matches the alarm will be tripped.
 
 ## testThreshold
 
-If this option is set, alarm will only be triggered if a certain number of 
-tests fail. This can be used to prevent triggering alarms from stray sensor 
+If this option is set, alarm will only be triggered if a certain number of
+tests fail. This can be used to prevent triggering alarms from stray sensor
 reports. By default it is sufficient for only one test to fail for an alarm
 to be triggered.
 
@@ -110,7 +110,7 @@ to be triggered.
 This module creates a virtual device that controls the state of the
 security zone.
 
-metrics:level indicates if the alarm zone is armed or not. The device stores 
+metrics:level indicates if the alarm zone is armed or not. The device stores
 the current alarm state under metrics:state. Possible states are:
 
 * on: Zone in armed
@@ -143,7 +143,7 @@ Called whenever an alarm ends or is stopped by disabling the zone.
 
 ## security.$TYPE.delayAlarm
 
-Called whenever a delayed alarm is triggered. When the security zone is 
+Called whenever a delayed alarm is triggered. When the security zone is
 disabled before the delay finishes, a security.$TYPE.cancel event
 will be emitted, otherwise a security.$TYPE.alarm event will follow.
 
@@ -165,11 +165,11 @@ Called whenever the zone is activated, and alarm sensors are still triggered
 Install the BaseModule from https://github.com/maros/Zway-BaseModule first
 
 The prefered way of installing this module is via the "Zwave.me App Store"
-available in 2.2.0 and higher. For stable module releases no access token is 
-required. If you want to test the latest pre-releases use 'k1_beta' as 
+available in 2.2.0 and higher. For stable module releases no access token is
+required. If you want to test the latest pre-releases use 'k1_beta' as
 app store access token.
 
-For developers and users of older Zway versions installation via git is 
+For developers and users of older Zway versions installation via git is
 recommended.
 
 ```shell
@@ -193,7 +193,7 @@ git checkout -b master --track origin/master
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or any 
+the Free Software Foundation, either version 3 of the License, or any
 later version.
 
 Flame icon by João Proença from the Noun Project

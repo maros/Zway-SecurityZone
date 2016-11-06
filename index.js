@@ -13,7 +13,7 @@ Description:
 function SecurityZone (id, controller) {
     // Call superconstructor first (AutomationModule)
     SecurityZone.super_.call(this, id, controller);
-    
+
     this.delayAlarmTimeout      = undefined;
     this.delayActivateTimeout   = undefined;
     this.timeout                = undefined;
@@ -44,15 +44,15 @@ SecurityZone.prototype.types = [
 SecurityZone.prototype.events = [
     _.flatten(
         _.map(
-            SecurityZone.prototype.types, 
-            function(type){ 
+            SecurityZone.prototype.types,
+            function(type){
                 return [
                     'security.'+type+'.delayAlarm',
                     'security.'+type+'.delayCancel',
                     'security.'+type+'.alarm',
                     'security.'+type+'.stop',
                     'security.'+type+'.warning',
-                ]; 
+                ];
             }
         )
     )
@@ -61,7 +61,7 @@ SecurityZone.prototype.events = [
 SecurityZone.prototype.init = function (config) {
     SecurityZone.super_.prototype.init.call(this, config);
     var self = this;
-    
+
     self.type = (self.config.type == 'other') ? self.config.otherType: self.config.type;
     self.icon = 'on';
     self.vDev = this.controller.devices.create({
@@ -91,11 +91,11 @@ SecurityZone.prototype.init = function (config) {
         },
         moduleId: this.id
     });
-    
+
     //self.changeState(this.vDev.get('metrics:level'));
-    
+
     self.callback = _.bind(self.checkAlarm,self);
-    
+
     var state = this.vDev.get('metrics:state');
     if (state === 'delayActivate') {
         self.log('Restart activation delay');
@@ -104,15 +104,15 @@ SecurityZone.prototype.init = function (config) {
         self.log('Restart alarm delay');
         self.startDelayAlarm();
     }
-    
+
     setTimeout(_.bind(self.initCallback,self),12000);
 };
 
 SecurityZone.prototype.initCallback = function() {
     var self = this;
-    
+
     self.tests = {};
-    
+
     _.each(self.config.tests,function(test) {
         if (test.testType === "binary") {
             self.attach(test.testBinary);
@@ -126,12 +126,12 @@ SecurityZone.prototype.initCallback = function() {
 
 SecurityZone.prototype.stop = function () {
     var self = this;
-    
+
     if (this.vDev) {
         this.controller.devices.remove(this.vDev.id);
         this.vDev = undefined;
     }
-    
+
     _.each(self.config.tests,function(test) {
         if (test.testType === "binary") {
             self.detach(test.testBinary);
@@ -143,7 +143,7 @@ SecurityZone.prototype.stop = function () {
     });
 
     self.callback = undefined;
-    
+
     self.stopTimeout();
     self.stopDelayAlarm();
     self.stopDelayActivate();
@@ -194,7 +194,7 @@ SecurityZone.prototype.callEvent = function(event,message) {
         event:      event,
         message:    message
     };
-    
+
     self.log('Emit '+fullEvent);
     self.controller.emit(fullEvent,params);
 };
@@ -240,9 +240,9 @@ SecurityZone.prototype.startDelayAlarm = function () {
     var dateNow         = (new Date()).getTime();
     var delayRelative   = self.config.delayAlarm;
     var delayAlarm      = self.vDev.get('metrics:delayAlarm');
-    
+
     self.stopDelayAlarm();
-    
+
     if (typeof(delayAlarm) === 'number') {
         if (dateNow >= delayAlarm) {
             self.changeState('alarm',true);
@@ -255,7 +255,7 @@ SecurityZone.prototype.startDelayAlarm = function () {
         delayAlarm = dateNow + self.config.delayAlarm;
         self.vDev.set('metrics:delayAlarm',delayAlarm);
     }
-    
+
     self.delayAlarmTimeout = setTimeout(
         _.bind(
             self.changeState,
@@ -263,7 +263,7 @@ SecurityZone.prototype.startDelayAlarm = function () {
             'alarm',
             true
         ),
-        (delayRelative * 1000) 
+        (delayRelative * 1000)
     );
 };
 
@@ -275,9 +275,9 @@ SecurityZone.prototype.startDelayActivate = function () {
     var dateNow         = (new Date()).getTime();
     var delayRelative   = self.config.delayActivate;
     var delayActivate   = self.vDev.get('metrics:delayActivate');
-    
+
     self.stopDelayActivate();
-    
+
     if (typeof(delayActivate) === 'number') {
         self.log('Restart delayed activation');
         if (dateNow >= delayActivate) {
@@ -292,7 +292,7 @@ SecurityZone.prototype.startDelayActivate = function () {
         delayActivate = dateNow + self.config.delayActivate;
         self.vDev.set('metrics:delayActivate',delayActivate);
     }
-    
+
     self.delayActivateTimeout = setTimeout(
         _.bind(
             self.changeState,
@@ -300,7 +300,7 @@ SecurityZone.prototype.startDelayActivate = function () {
             'on',
             true
         ),
-        (delayRelative * 1000) 
+        (delayRelative * 1000)
     );
 };
 
@@ -317,7 +317,7 @@ SecurityZone.prototype.changeState = function (newState,timer) {
     var state       = self.vDev.get('metrics:state');
     var cleanup     = false;
     var message;
-    
+
     // Turn off from handler
     if (newState === 'off') {
         self.stopDelayActivate();
@@ -374,7 +374,7 @@ SecurityZone.prototype.changeState = function (newState,timer) {
     } else if (newState === 'alarm'
         && (state === 'on' || (state === 'delayAlarm' && timer === true))) {
         self.log('Alarm');
-        
+
         if (self.config.singleZone) {
             var ignore = false;
             self.processDevices([
@@ -382,7 +382,7 @@ SecurityZone.prototype.changeState = function (newState,timer) {
                 ['metrics:securityType','=',self.type],
                 ['id','!=',self.vDev.id],
             ],function(vDev) {
-                
+
                 var state = vDev.get('metrics:state');
                 self.log('Check other zone'+state);
                 if (state === 'alarm' || state === 'timeout' || state === 'delayAlarm') {
@@ -394,7 +394,7 @@ SecurityZone.prototype.changeState = function (newState,timer) {
                 return;
             }
         }
-        
+
         self.setState({
             'delayActivate': null,
             'delayAlarm': null,
@@ -402,23 +402,23 @@ SecurityZone.prototype.changeState = function (newState,timer) {
         });
         message = self.getMessage('alarm_notification',self.vDev.get('metrics:triggeredDevcies'));
         self.callEvent('alarm',message);
-        
+
         // Send Notification
         self.controller.addNotification(
-            "warning", 
+            "warning",
             message,
-            "module", 
+            "module",
             "SecurityZone"
         );
-        
+
         var triggered = self.testsRules();
         if (triggered === false) {
             setTimeout(self.callback,1000*5);
         }
     // Stop alarm (either immediate or after timeout)
-    } else if (newState === 'stop' 
+    } else if (newState === 'stop'
         && (
-            (state === 'alarm' && self.config.timeout === 0) 
+            (state === 'alarm' && self.config.timeout === 0)
             || (state === 'timeout' && timer === true)
         )) {
         self.log('Stop alarm');
@@ -463,15 +463,15 @@ SecurityZone.prototype.changeState = function (newState,timer) {
 SecurityZone.prototype.setState = function(state) {
     var self = this;
     state.icon = state.icon || state.state;
-    
+
     // Store as object attribute
     self.icon = state.icon;
     state.icon = self.imagePath + "/icon_" + self.config.type + "_" + state.icon + ".png";
-    
+
     if (state.state === 'on' || state.state === 'off') {
         state.level = state.state;
     }
-    
+
     _.each(state, function(val, key) {
         self.vDev.set('metrics:'+key,val);
     });
@@ -480,14 +480,14 @@ SecurityZone.prototype.setState = function(state) {
 
 SecurityZone.prototype.getMessage = function(langKey,devices) {
     var self = this;
-    
+
     var notification = self.langFile[langKey];
     var type = self.config.type === 'other' ? self.config.otherType : self.langFile['type_'+self.config.type];
     notification = notification.replace('[TYPE]',type);
     notification = notification.replace('[ZONE]',self.vDev.get('metrics:title'));
     notification = notification.replace('[STATE]',self.vDev.get('metrics:state'));
     notification = notification.replace('[DEVICES]',devices.join(', '));
-    
+
     return notification;
 };
 
@@ -496,9 +496,9 @@ SecurityZone.prototype.getMessage = function(langKey,devices) {
  */
 SecurityZone.prototype.checkAlarm = function () {
     var self = this;
-    
+
     var triggered = self.testsRules();
-    
+
     // New alarm
     if (triggered === true) {
         self.changeState('alarm');
@@ -510,7 +510,7 @@ SecurityZone.prototype.checkAlarm = function () {
 
 SecurityZone.prototype.checkActivate = function(checks) {
     var self = this;
-    
+
     // Poll all devices
     _.each(self.config.tests,function(test) {
         var deviceId;
@@ -529,18 +529,18 @@ SecurityZone.prototype.checkActivate = function(checks) {
             return;
         }
     });
-    
+
     self.vDev.set('metrics:triggeredDevcies',[]);
-    
+
     setTimeout(function() {
         var devices = self.processRules(checks);
         if (devices.length > 0) {
             var message = self.getMessage('activate_triggered',devices);
             self.callEvent('warning',message);
             self.controller.addNotification(
-                "warning", 
+                "warning",
                 message,
-                "module", 
+                "module",
                 "SecurityZone"
             );
         }
@@ -550,12 +550,12 @@ SecurityZone.prototype.checkActivate = function(checks) {
 SecurityZone.prototype.processRules = function(checks) {
     var self    = this;
     var devices = [];
-    
+
     _.each(self.config.tests,function(test) {
         var deviceId,testOperator,testValue,testCheck;
         var testTrigger     = false;
         var comapreKey      = 'level';
-        
+
         if (test.testType === "multilevel") {
             deviceId        = test.testMultilevel.device;
             testOperator    = test.testMultilevel.testOperator;
@@ -578,51 +578,51 @@ SecurityZone.prototype.processRules = function(checks) {
             self.error('Inavlid test type');
             return;
         }
-        
+
         testCheck = testCheck || 'delayed';
-        
+
         // Skip checks that do not match phase
         if (_.isArray(checks)
             && _.indexOf(checks,testCheck) === -1) {
             return;
         }
-        
+
         var deviceObject    = self.controller.devices.get(deviceId);
         if (deviceObject === null) {
             self.error('Could not find device '+deviceId);
             return;
         }
-        
+
         var comapreValue    = deviceObject.get('metrics:'+comapreKey);
         if (! self.compare(comapreValue,testOperator,testValue)) {
             return;
         }
-        
+
         testTrigger         = true;
         var location        = deviceObject.get('location');
         var room            = _.find(
-            self.controller.locations, 
+            self.controller.locations,
             function(item){ return (item.id === location); }
         );
-        
+
         var message         = deviceObject.get('metrics:title');
         if (typeof(room) === 'object') {
             message = message + ' (' + room.title + ')';
         }
         devices.push(message);
-        
+
         self.log('Triggered test from '+deviceObject.get('metrics:title')+' ('+deviceId+')');
     });
-    
+
     return devices;
 };
 
 SecurityZone.prototype.testsRules = function() {
     var self = this;
-    
+
     var triggered   = false;
     var devices     = self.processRules();
-    
+
     if (typeof(self.config.testThreshold) === 'number'
         && self.config.testThreshold > 0) {
         if (devices.length >= self.config.testThreshold) {
@@ -631,10 +631,10 @@ SecurityZone.prototype.testsRules = function() {
     } else if (devices.length > 0) {
         triggered = true;
     }
-    
+
     if (triggered) {
         self.vDev.set('metrics:triggeredDevcies',devices);
     }
-    
+
     return triggered;
 };
