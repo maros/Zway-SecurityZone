@@ -182,6 +182,7 @@ SecurityZone.prototype.detach = function(test) {
 SecurityZone.prototype.callEvent = function(event,message) {
     var self = this;
     var fullEvent = 'security.'+self.type+'.'+event;
+    self.log('Calling event '+fullEvent);
     var params = {
         id:         self.id,
         title:      self.vDev.get('metrics:title'),
@@ -319,19 +320,19 @@ SecurityZone.prototype.changeState = function (newState,timer) {
     
     // Turn off from handler
     if (newState === 'off') {
-        if (state == 'delayAlarm') {
-            self.callEvent('delayCancel');
-        } else if (state == 'alarm') {
-            self.callEvent('stop');
-        }
         self.stopDelayActivate();
         self.stopDelayAlarm();
-        self.setState({ 
+        self.setState({
             'state': 'off',
             'triggeredDevcies': [],
             'delayActivate': null,
             'delayAlarm': null
         });
+        if (state == 'delayAlarm') {
+            self.callEvent('delayCancel');
+        } else if (state == 'alarm') {
+            self.callEvent('stop');
+        }
         self.log('Disarm zone '+self.id);
     // Turn on delayed from handler
     } else if (newState === 'on'
