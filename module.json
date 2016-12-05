@@ -2,7 +2,7 @@
    "author" : "Maroš Kollár",
    "category" : "security",
    "defaults" : {
-      "alarmDevice": false,
+      "alarmDevice" : false,
       "cancelable" : false,
       "delayActivate" : 0,
       "delayAlarm" : 0,
@@ -11,7 +11,7 @@
       "tests" : [],
       "timeout" : 0,
       "title" : "__m_title__",
-      "type": "intrusion"
+      "type" : "intrusion"
    },
    "dependencies" : [
       "BaseModule"
@@ -23,7 +23,6 @@
    "options" : {
       "definitions" : {
          "check" : {
-            "label" : "__check_label__",
             "label" : "__check_helper__",
             "optionLabels" : [
                "__check_immediate__",
@@ -247,13 +246,13 @@
          },
          "tests" : {
             "items" : {
-               "defaults": {
-                    "testType" : "binary"
+               "defaults" : {
+                  "testType" : "binary"
                },
                "properties" : {
                   "testBinary" : {
-                     "defaults": {
-                        "testValue": "on"
+                     "defaults" : {
+                        "testValue" : "on"
                      },
                      "dependencies" : "testType",
                      "properties" : {
@@ -309,8 +308,8 @@
                      "type" : "object"
                   },
                   "testRemote" : {
-                     "defaults": {
-                        "testValue": "on"
+                     "defaults" : {
+                        "testValue" : "on"
                      },
                      "dependencies" : "testType",
                      "properties" : {
@@ -374,5 +373,5 @@
       "type" : "object"
    },
    "singleton" : false,
-   "version" : "1.10"
+   "version" : "1.11"
 }

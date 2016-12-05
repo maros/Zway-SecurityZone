@@ -1,3 +1,11 @@
+1.11 2016 Dec 05, Mon
+    * Call events after own state was changed
+    * Update description & translations
+    * Pass triggered devices in event
+    * Change module category
+    * Rename check label
+    * Fix typos (by Rudi56)
+
 1.10 2016 Jun 01, Wed
     * Improve texts
     * Set defaults
