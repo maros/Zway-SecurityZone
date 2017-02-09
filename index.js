@@ -350,7 +350,11 @@ SecurityZone.prototype.changeState = function (newState,timer) {
     } else if (newState === 'on'
         && (state === 'off' || (state === 'delayActivate' && timer === true))) {
         self.log('Arm zone '+self.id);
-        // TODO check security zone and notify
+        if (state === 'delayActivate' && timer === true) {
+            self.checkActivate(['delayed']);
+        } else {
+            self.checkActivate(['immediate','delayed']);
+        }
         self.checkActivate(['immediate','delayed']);
         self.setState({
             'state': 'on',
