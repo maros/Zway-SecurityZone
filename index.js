@@ -355,7 +355,6 @@ SecurityZone.prototype.changeState = function (newState,timer) {
         } else {
             self.checkActivate(['immediate','delayed']);
         }
-        self.checkActivate(['immediate','delayed']);
         self.setState({
             'state': 'on',
             'delayActivate': null,
