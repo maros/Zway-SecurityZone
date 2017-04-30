@@ -365,6 +365,10 @@ SecurityZone.prototype.changeState = function (newState,timer) {
         && state === 'on'
         && self.config.delayAlarm > 0) {
         self.log('State change: Delayed alarm');
+
+        if (! self.checkOtherZones() )
+            return;
+
         message = self.getMessage('alarm_notification',self.vDev.get('metrics:triggeredDevcies'));
         self.setState({
             'state': 'delayAlarm',
@@ -378,25 +382,8 @@ SecurityZone.prototype.changeState = function (newState,timer) {
         && (state === 'on' || (state === 'delayAlarm' && timer === true))) {
         self.log('State change: Alarm');
 
-        if (self.config.singleZone) {
-            var ignore = false;
-            self.processDevices([
-                ['probeType','=','controller_security'],
-                ['metrics:securityType','=',self.type],
-                ['id','!=',self.vDev.id],
-            ],function(vDev) {
-
-                var state = vDev.get('metrics:state');
-                self.log('Check other zone'+state);
-                if (state === 'alarm' || state === 'timeout' || state === 'delayAlarm') {
-                    self.log('Other security zone '+vDev.id+' is already active. Ignoring alarm');
-                    ignore = true;
-                }
-            });
-            if (ignore) {
-                return;
-            }
-        }
+        if (! self.checkOtherZones() )
+            return;
 
         self.setState({
             'delayActivate': null,
@@ -464,6 +451,30 @@ SecurityZone.prototype.changeState = function (newState,timer) {
         return;
     }
 };
+
+SecurityZone.prototype.checkOtherZones = function() {
+    var self = this;
+
+    if (self.config.singleZone) {
+        var otherOk = true;
+        self.processDevices([
+            ['probeType','=','controller_security'],
+            ['metrics:securityType','=',self.type],
+            ['id','!=',self.vDev.id],
+        ],function(vDev) {
+
+            var state = vDev.get('metrics:state');
+            self.log('Check other zone '+vDev.id+' is in '+state);
+            if (state === 'alarm' || state === 'timeout' || state === 'delayAlarm') {
+                self.log('Other security zone '+vDev.id+' is already active. Ignoring alarm');
+                otherOk = false;
+            }
+        });
+        return otherOk;
+    }
+
+    return true;
+}
 
 SecurityZone.prototype.setState = function(state) {
     var self = this;
