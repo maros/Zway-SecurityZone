@@ -474,7 +474,7 @@ SecurityZone.prototype.checkOtherZones = function() {
     }
 
     return true;
-}
+};
 
 SecurityZone.prototype.setState = function(state) {
     var self = this;
